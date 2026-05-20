@@ -1,7 +1,7 @@
 const styles = {
   sm: {
     img: 'w-[30px] h-[30px]',
-    text: 'text-[24px]', 
+    text: 'text-[22px]', 
   },
   md: {
     img: 'w-[40px] h-[40px]',
