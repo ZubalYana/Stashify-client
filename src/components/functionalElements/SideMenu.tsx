@@ -142,7 +142,7 @@ export default function SideMenu() {
         <WordMarkLogo size="sm" />
       </div>
 
-      <nav className="flex flex-col gap-y-2 flex-1 min-h-0">
+      <nav className="flex flex-col gap-y-2 flex-1 min-h-0 overflow-y-auto nav-scroll">
         <motion.button
           className="w-full flex items-center gap-x-2 text-[14px] font-normal
                      text-white bg-white/[0.06] rounded-[12px] px-3 py-2
