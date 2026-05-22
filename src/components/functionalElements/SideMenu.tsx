@@ -15,6 +15,7 @@ import {
   Settings,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import MobileNav from "../popups/MobileNav";
 
 interface NavItem {
   title: string;
@@ -116,6 +117,7 @@ function CollapsibleSection({
 
 export default function SideMenu() {
   const shouldReduceMotion = useReducedMotion();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const placeholderProjects: NavItem[] = [
     { title: "Project 1", icon: <CircuitBoard size={15} strokeWidth={1} /> },
@@ -199,8 +201,20 @@ export default function SideMenu() {
           ))}
         </div>
       </div>
-      <div className="flex lg:hidden absolute top-[20px] right-[20px]">
-        <Menu/>
+      <div className="flex lg:hidden">
+          <motion.button
+    className="flex lg:hidden absolute top-[18px] right-[18px] z-30
+               p-[7px] rounded-[10px] text-[#B7ADA6]
+               hover:text-white hover:bg-white/[0.06]
+               transition-colors duration-150 cursor-pointer"
+    onClick={() => setMobileOpen(true)}
+    whileTap={shouldReduceMotion ? {} : { scale: 0.92 }}
+  >
+    <Menu size={20} strokeWidth={1.5} />
+  </motion.button>
+ 
+  <MobileNav isOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
+
       </div>
     </div>
   );
