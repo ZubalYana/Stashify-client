@@ -13,6 +13,7 @@ import {
   User,
   Settings,
 } from "lucide-react";
+import { NavLink } from "react-router-dom";
 
 interface NavItem {
   title: string;
@@ -143,29 +144,40 @@ export default function SideMenu() {
       </div>
 
       <nav className="flex flex-col gap-y-2 flex-1 min-h-0 overflow-y-auto nav-scroll">
-        <motion.button
-          className="w-full flex items-center gap-x-2 text-[14px] font-normal
-                     text-white bg-white/[0.06] rounded-[12px] px-3 py-2
-                     hover:bg-white/[0.08] transition-colors duration-150 cursor-pointer"
-          whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
-        >
-          <Boxes size={16} strokeWidth={1} />
-          All Snippets
-        </motion.button>
-        <CollapsibleSection
-          label="Projects"
-          icon={<BrainCircuit size={16} strokeWidth={1} />}
-          items={placeholderProjects}
-          addLabel="Add new project"
-          shouldReduceMotion={shouldReduceMotion}
-        />
-        <CollapsibleSection
-          label="Collections"
-          icon={<Library size={16} strokeWidth={1} />}
-          items={placeholderCollections}
-          addLabel="Add new collection"
-          shouldReduceMotion={shouldReduceMotion}
-        />
+        <NavLink to="/">
+          {({ isActive }) => (
+            <motion.div
+              className={`w-full flex items-center gap-x-2 text-[14px] rounded-[12px] px-3 py-2 cursor-pointer
+        ${
+          isActive
+            ? "text-white bg-white/[0.06]"
+            : "text-[#B7ADA6] hover:text-white hover:bg-white/[0.04]"
+        }`}
+              whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
+            >
+              <Boxes size={16} strokeWidth={1} />
+              All Snippets
+            </motion.div>
+          )}
+        </NavLink>
+        <NavLink to="/projects">
+          <CollapsibleSection
+            label="Projects"
+            icon={<BrainCircuit size={16} strokeWidth={1} />}
+            items={placeholderProjects}
+            addLabel="Add new project"
+            shouldReduceMotion={shouldReduceMotion}
+          />
+        </NavLink>
+        <NavLink to="/collections">
+          <CollapsibleSection
+            label="Collections"
+            icon={<Library size={16} strokeWidth={1} />}
+            items={placeholderCollections}
+            addLabel="Add new collection"
+            shouldReduceMotion={shouldReduceMotion}
+          />
+        </NavLink>
       </nav>
       <div className="flex flex-col gap-y-[2px] pt-4 border-t border-white/[0.05]">
         {[

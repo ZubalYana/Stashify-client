@@ -1,13 +1,17 @@
 import './App.css'
 import { Route, Routes } from 'react-router-dom'
-import SideMenu from './components/functionalElements/SideMenu'
+import MenuLayout from './components/functionalElements/MenuLayout'
+import AllSnippets from './components/pages/AllSnippets';
+import Collections from './components/pages/Collections';
+import Projects from './components/pages/Projects';
 
 function App() {
-
   return (
     <div className='w-full'>
     <Routes>
-      <Route path='/' element={<SideMenu/>}/>
+      <Route path='/' element={<MenuLayout><AllSnippets/></MenuLayout>}/>
+      <Route path='/collections' element={<MenuLayout><Collections/></MenuLayout>}/>
+      <Route path='/projects' element={<MenuLayout><Projects/></MenuLayout>}/>
     </Routes>
     </div>
   )
