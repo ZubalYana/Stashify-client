@@ -1,10 +1,10 @@
 import SnippetCard from "../functionalElements/SnippetCard";
 export default function AllSnippets() {
   return (
-    <div className="flex-1 p-[20px] lg:p-[40px]">
-      <h3 className="text-[20px] font-semibold">All snippets</h3>
-      <div className="w-full flex flex-wrap items-center justify-between mt-4">
-        <div className="w-[32%]">
+    <div className="w-full lg:flex-1 lg:w-auto p-[20px] lg:p-[40px]">
+      <h3 className="text-[24px] lg:text-[20px] font-semibold">All snippets</h3>
+      <div className="w-full flex flex-col gap-y-6 md:flex-row flex-wrap items-center justify-between mt-4">
+        <div className="w-full md:w-[32%]">
           <SnippetCard
             title="Basic Function"
             description="Some brief and comprehensive description AI will generate..."
@@ -30,7 +30,7 @@ for (int i = 0; i < times; ++i) {
             onDelete={() => console.log("delete")}
           />
         </div>
-        <div className="w-[32%]">
+        <div className="w-full md:w-[32%]">
           <SnippetCard
             title="Basic Function"
             description="Some brief and comprehensive description AI will generate..."
@@ -56,7 +56,7 @@ for (int i = 0; i < times; ++i) {
             onDelete={() => console.log("delete")}
           />
         </div>
-        <div className="w-[32%]">
+        <div className="w-full md:w-[32%]">
           <SnippetCard
             title="Basic Function"
             description="Some brief and comprehensive description AI will generate..."

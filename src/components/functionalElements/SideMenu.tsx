@@ -2,6 +2,7 @@ import WordMarkLogo from "../WordmarkLogo";
 import { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
+  Menu,
   Boxes,
   BrainCircuit,
   Library,
@@ -135,66 +136,71 @@ export default function SideMenu() {
   ];
 
   return (
-    <div
-      className="w-[240px] h-screen bg-[#171717] border-r border-[#B7ADA6]/10
-                 flex flex-col lg:px-[18px] lg:py-[28px]"
-    >
-      <div className="px-1 mb-8">
-        <WordMarkLogo size="sm" />
-      </div>
+    <div>
+      <div
+        className="w-[240px] h-screen bg-[#171717] border-r border-[#B7ADA6]/10
+                hidden lg:flex flex-col lg:px-[18px] lg:py-[28px]"
+      >
+        <div className="px-1 mb-8">
+          <WordMarkLogo size="sm" />
+        </div>
 
-      <nav className="flex flex-col gap-y-2 flex-1 min-h-0 overflow-y-auto nav-scroll">
-        <NavLink to="/">
-          {({ isActive }) => (
-            <motion.div
-              className={`w-full flex items-center gap-x-2 text-[14px] rounded-[12px] px-3 py-2 cursor-pointer
+        <nav className="flex flex-col gap-y-2 flex-1 min-h-0 overflow-y-auto nav-scroll">
+          <NavLink to="/">
+            {({ isActive }) => (
+              <motion.div
+                className={`w-full flex items-center gap-x-2 text-[14px] rounded-[12px] px-3 py-2 cursor-pointer
         ${
           isActive
             ? "text-white bg-white/[0.06]"
             : "text-[#B7ADA6] hover:text-white hover:bg-white/[0.04]"
         }`}
-              whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
-            >
-              <Boxes size={16} strokeWidth={1} />
-              All Snippets
-            </motion.div>
-          )}
-        </NavLink>
-        <NavLink to="/projects">
-          <CollapsibleSection
-            label="Projects"
-            icon={<BrainCircuit size={16} strokeWidth={1} />}
-            items={placeholderProjects}
-            addLabel="Add new project"
-            shouldReduceMotion={shouldReduceMotion}
-          />
-        </NavLink>
-        <NavLink to="/collections">
-          <CollapsibleSection
-            label="Collections"
-            icon={<Library size={16} strokeWidth={1} />}
-            items={placeholderCollections}
-            addLabel="Add new collection"
-            shouldReduceMotion={shouldReduceMotion}
-          />
-        </NavLink>
-      </nav>
-      <div className="flex flex-col gap-y-[2px] pt-4 border-t border-white/[0.05]">
-        {[
-          { label: "Profile", icon: <User size={16} strokeWidth={1} /> },
-          { label: "Settings", icon: <Settings size={16} strokeWidth={1} /> },
-        ].map(({ label, icon }) => (
-          <motion.button
-            key={label}
-            className="w-full flex items-center gap-x-2 text-[13px] font-normal
+                whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
+              >
+                <Boxes size={16} strokeWidth={1} />
+                All Snippets
+              </motion.div>
+            )}
+          </NavLink>
+          <NavLink to="/projects">
+            <CollapsibleSection
+              label="Projects"
+              icon={<BrainCircuit size={16} strokeWidth={1} />}
+              items={placeholderProjects}
+              addLabel="Add new project"
+              shouldReduceMotion={shouldReduceMotion}
+            />
+          </NavLink>
+          <NavLink to="/collections">
+            <CollapsibleSection
+              label="Collections"
+              icon={<Library size={16} strokeWidth={1} />}
+              items={placeholderCollections}
+              addLabel="Add new collection"
+              shouldReduceMotion={shouldReduceMotion}
+            />
+          </NavLink>
+        </nav>
+        <div className="flex flex-col gap-y-[2px] pt-4 border-t border-white/[0.05]">
+          {[
+            { label: "Profile", icon: <User size={16} strokeWidth={1} /> },
+            { label: "Settings", icon: <Settings size={16} strokeWidth={1} /> },
+          ].map(({ label, icon }) => (
+            <motion.button
+              key={label}
+              className="w-full flex items-center gap-x-2 text-[13px] font-normal
                        text-[#B7ADA6] hover:text-white rounded-[12px] px-3 py-2
                        hover:bg-white/[0.04] transition-colors duration-150 cursor-pointer"
-            whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
-          >
-            {icon}
-            {label}
-          </motion.button>
-        ))}
+              whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
+            >
+              {icon}
+              {label}
+            </motion.button>
+          ))}
+        </div>
+      </div>
+      <div className="flex lg:hidden absolute top-[20px] right-[20px]">
+        <Menu/>
       </div>
     </div>
   );
