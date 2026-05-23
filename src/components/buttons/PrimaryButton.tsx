@@ -21,10 +21,10 @@ export default function PrimaryButton({ Icon, text, onClick }: PrimaryButtonProp
       "
     >
       <Icon
-        className="transition-transform duration-200 group-hover:scale-110"
+        className="transition-transform duration-200 scale-80 group-hover:scale-90"
         strokeWidth={2.5}
       />
-      <span className="font-bold text-[24px] uppercase transition-transform duration-200 group-hover:translate-x-0.5">
+      <span className="font-bold text-[16px] uppercase transition-transform duration-200 group-hover:translate-x-0.5">
         {text}
       </span>
     </button>

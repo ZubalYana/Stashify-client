@@ -22,13 +22,13 @@ export default function SnippetCreation({ onClose }: SnippetCreationProps) {
   }
 
   return (
-    <div className="w-[90vw] max-w-[760px] bg-[#121212] rounded-2xl p-6 lg:p-8 border border-white/10">
+    <div className="w-[90vw] max-w-[760px] bg-[#121212] rounded-2xl p-[20px] lg:p-[25px] lg:p-8 border border-white/10">
       
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-white text-2xl font-medium">Create a new snippet</h2>
+        <h2 className="text-white text-[24px] font-medium">Create a new snippet</h2>
         <button
           onClick={onClose}
-          className="text-white/40 hover:text-white/80 transition-colors duration-150"
+          className="text-white/40 hover:text-white/80 transition-colors duration-150 cursor-pointer"
         >
           <X size={22} />
         </button>
@@ -62,7 +62,7 @@ export default function SnippetCreation({ onClose }: SnippetCreationProps) {
         {isLoading ? "Analyzing your code..." : isGenerated ? "Summary ready ✓" : ""}
       </p>
 
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-center mt-2">
         <PrimaryButton
           Icon={Braces}
           text={isGenerated ? "Save Snippet" : "Generate Summary"}
