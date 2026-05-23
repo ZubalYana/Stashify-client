@@ -1,6 +1,10 @@
+import { useState } from "react";
 import SnippetCard from "../functionalElements/SnippetCard";
 import NewSnippet from "../buttons/NewSnippet";
+import SnippetCreation from "../popups/SnippetCreation";
+
 export default function AllSnippets() {
+  const [creationMode, setCreationMode] = useState(false);
   return (
     <div className="w-full lg:flex-1 lg:w-auto p-[20px] lg:p-[40px]">
       <h3 className="text-[24px] lg:text-[20px] font-semibold">All snippets</h3>
@@ -84,7 +88,18 @@ for (int i = 0; i < times; ++i) {
           />
         </div>
       </div>
-      <NewSnippet/>
+      <NewSnippet onAddNewSnippet={() => setCreationMode(true)} />
+
+      {creationMode && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          onClick={() => setCreationMode(false)}
+        >
+          <div onClick={(e) => e.stopPropagation()}>
+            <SnippetCreation onClose={() => setCreationMode(false)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

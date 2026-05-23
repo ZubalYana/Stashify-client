@@ -38,3 +38,12 @@ a, link, p, span, div{
 .nav-scroll::-webkit-scrollbar-thumb:hover {
   background: #F07020cc;
 }
+
+@keyframes scan {
+  0%   { top: -80px; }
+  100% { top: 110%; }
+}
+
+@theme {
+  --animate-scan: scan 1.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
