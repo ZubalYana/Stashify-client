@@ -62,7 +62,7 @@ export default function SnippetCreation({ onClose }: SnippetCreationProps) {
         {isLoading ? "Analyzing your code..." : isGenerated ? "Summary ready ✓" : ""}
       </p>
 
-      <div className="flex justify-center mt-2">
+      <div className="flex justify-center mt-4 lg:mt-2">
         <PrimaryButton
           Icon={Braces}
           text={isGenerated ? "Save Snippet" : "Generate Summary"}
