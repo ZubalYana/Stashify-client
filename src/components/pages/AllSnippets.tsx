@@ -1,4 +1,5 @@
 import SnippetCard from "../functionalElements/SnippetCard";
+import NewSnippet from "../buttons/NewSnippet";
 export default function AllSnippets() {
   return (
     <div className="w-full lg:flex-1 lg:w-auto p-[20px] lg:p-[40px]">
@@ -83,6 +84,7 @@ for (int i = 0; i < times; ++i) {
           />
         </div>
       </div>
+      <NewSnippet/>
     </div>
   );
 }
