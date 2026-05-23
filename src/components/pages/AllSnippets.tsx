@@ -1,10 +1,14 @@
 import { useState } from "react";
+import { useToast } from "../hooks/useToast";
 import SnippetCard from "../functionalElements/SnippetCard";
 import NewSnippet from "../buttons/NewSnippet";
 import SnippetCreation from "../popups/SnippetCreation";
+import ToastContainer from "../functionalElements/ToastContainer";
+import { CheckCircle } from "lucide-react";
 
 export default function AllSnippets() {
   const [creationMode, setCreationMode] = useState(false);
+  const { toasts, addToast, removeToast } = useToast();
   return (
     <div className="w-full lg:flex-1 lg:w-auto p-[20px] lg:p-[40px]">
       <h3 className="text-[24px] lg:text-[20px] font-semibold">All snippets</h3>
@@ -95,11 +99,15 @@ for (int i = 0; i < times; ++i) {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
           onClick={() => setCreationMode(false)}
         >
-          <div onClick={(e) => e.stopPropagation()}>
-            <SnippetCreation onClose={() => setCreationMode(false)} />
+          <div onClick={(e) => {
+            e.stopPropagation()
+            addToast({ Icon: CheckCircle, type: "success", text: "Snippet saved!" })
+            }}>
+            <SnippetCreation onClose={() => setCreationMode(false)}/>
           </div>
         </div>
       )}
+      <ToastContainer toasts={toasts} onDismiss={removeToast} />
     </div>
   );
 }
