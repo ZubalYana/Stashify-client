@@ -10,7 +10,7 @@ export default function NewSnippet({ onAddNewSnippet }: NewSnippetProps) {
       onClick={onAddNewSnippet}
       className="
         group
-        w-[40px] h-[40px] lg:w-[50px] lg:h-[50px]
+        w-[50px] h-[50px]
         bg-[#F07020] rounded-full cursor-pointer
         flex items-center justify-center
         fixed right-[20px] bottom-[20px] lg:right-[40px] lg:bottom-[40px]
