@@ -1,30 +1,47 @@
+import { useState } from "react"
+
 interface InputProps {
-  label?: string;
-  placeholder?: string;
+  label: string;
+  type?: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   error?: string;
 }
 
-export default function Input({ label, placeholder, value, onChange, error }: InputProps) {
+export default function Input({ label, type = "text", value, onChange, error }: InputProps) {
+  const [focused, setFocused] = useState(false)
+  const floating = focused || value.length > 0
+
   return (
-    <div className="flex flex-col gap-1.5 w-full">
-      {label && (
-        <label className="text-sm font-medium text-white/70">{label}</label>
-      )}
+    <div className="relative w-full">
       <input
-        type="text"
+        type={type}
         value={value}
         onChange={onChange}
-        placeholder={placeholder}
-        className={`w-full bg-[#0d0d0d] text-white text-sm px-4 py-3 rounded-xl border outline-none 
-          transition-colors duration-150 placeholder:text-white/20
-          focus:border-[#F07020]/60
-          ${error ? "border-red-500/50" : "border-white/10 hover:border-white/20"}`}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        className={`
+          peer w-full bg-[#0d0d0d] text-white text-sm px-4 pt-5 pb-2
+          rounded-xl border outline-none transition-all duration-200
+          placeholder:text-transparent
+          ${error
+            ? "border-red-500/50"
+            : focused
+              ? "border-[#F07020]/60"
+              : "border-white/10 hover:border-white/20"
+          }
+        `}
       />
-      {error && (
-        <p className="text-xs text-red-400">{error}</p>
-      )}
+      <label className={`
+        absolute left-4 transition-all duration-200 pointer-events-none select-none
+        ${floating
+          ? "top-1.5 text-[10px] text-[#F07020]/70"
+          : "top-3.5 text-sm text-white/30"
+        }
+      `}>
+        {label}
+      </label>
+      {error && <p className="text-xs text-red-400 mt-1.5 ml-1">{error}</p>}
     </div>
   )
 }
