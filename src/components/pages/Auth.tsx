@@ -5,9 +5,8 @@ import PasswordInput from "../functionalElements/PasswordInput";
 import PrimaryButton from "../buttons/PrimaryButton";
 import WordMarkLogo from "../WordmarkLogo";
 
-const fieldVariants = {
-  hidden: { opacity: 0, height: 0, marginBottom: 0 },
-  visible: { opacity: 1, height: "auto", marginBottom: 12 },
+function useIsMobile() {
+  return typeof window != "undefined" && window.innerWidth < 768;
 }
 
 export default function Auth() {
@@ -16,6 +15,17 @@ export default function Auth() {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const isLogin = mode === "login";
+  const isMobile = useIsMobile();
+
+  const fieldVariants = isMobile
+    ? {
+        hidden: { opacity: 0, scaleY: 0 },
+        visible: { opacity: 1, scaleY: 1 },
+      }
+    : {
+        hidden: { opacity: 0, height: 0, marginBottom: 0 },
+        visible: { opacity: 1, height: "auto", marginBottom: 12 },
+      };
 
   const handleSubmit = () => {
     if (isLogin) {
@@ -30,7 +40,6 @@ export default function Auth() {
       <div className="absolute w-[500px] h-[500px] rounded-full bg-[#F07020]/5 blur-[100px] pointer-events-none" />
 
       <div className="relative w-full max-w-[420px] mx-4 bg-[#141414] rounded-2xl p-8 border border-white/5 shadow-[0_0_60px_rgba(0,0,0,0.5)]">
-
         <div className="flex justify-center mb-6">
           <WordMarkLogo size="sm" />
         </div>
@@ -49,7 +58,6 @@ export default function Auth() {
         </AnimatePresence>
 
         <div className="flex flex-col mb-6">
-
           <AnimatePresence initial={false}>
             {!isLogin && (
               <motion.div
@@ -59,16 +67,33 @@ export default function Auth() {
                 animate="visible"
                 exit="hidden"
                 transition={{ duration: 0.25, ease: "easeInOut" }}
-                style={{ overflow: "hidden" }}
+                style={{
+                  overflow: "hidden",
+                  ...(isMobile && { transformOrigin: "top" }),
+                }}
+                className={isMobile ? "mb-3" : ""}
               >
-                <Input label="Name" value={name} onChange={e => setName(e.target.value)} />
+                <Input
+                  label="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
               </motion.div>
             )}
           </AnimatePresence>
 
           <div className="flex flex-col gap-3">
-            <Input label="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} />
-            <PasswordInput label="Password" value={password} onChange={e => setPassword(e.target.value)} />
+            <Input
+              label="Email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <PasswordInput
+              label="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
         </div>
 
