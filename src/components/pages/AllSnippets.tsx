@@ -3,15 +3,25 @@ import { useState } from "react";
 import SnippetCard from "../functionalElements/SnippetCard";
 import NewSnippet from "../buttons/NewSnippet";
 import SnippetCreation from "../popups/SnippetCreation";
+import SnippetsSearchbar from "../functionalElements/SnippetsSearchbar";
 // import ToastContainer from "../functionalElements/ToastContainer";
 // import { CheckCircle } from "lucide-react";
 
 export default function AllSnippets() {
-  const [creationMode, setCreationMode] = useState(false);
+  const [creationMode, setCreationMode] = useState<boolean>(false);
+  const [searchText, setSearchText] = useState<string>('');
   // const { toasts, addToast, removeToast } = useToast();
+
+  const searchForSippet = ()=>{
+    console.log('Actively searching for your code snippet...')
+  }
   return (
     <div className="w-full lg:flex-1 lg:w-auto p-[20px] lg:p-[40px]">
       <h3 className="text-[24px] lg:text-[20px] font-semibold">All snippets</h3>
+      <SnippetsSearchbar
+      value={searchText}
+      onChange={(e)=>setSearchText(e.target.value)}
+      onSearch={()=>searchForSippet()}/>
       <div className="w-full flex flex-col gap-y-6 md:flex-row flex-wrap items-center justify-between mt-4">
         <div className="w-full md:w-[32%]">
           <SnippetCard
