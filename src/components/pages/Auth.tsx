@@ -35,7 +35,6 @@ export default function Auth() {
           <WordMarkLogo size="sm" />
         </div>
 
-        {/* heading animates on mode change */}
         <AnimatePresence mode="wait">
           <motion.h2
             key={mode}
@@ -51,7 +50,6 @@ export default function Auth() {
 
         <div className="flex flex-col mb-6">
 
-          {/* name field slides in/out */}
           <AnimatePresence initial={false}>
             {!isLogin && (
               <motion.div
@@ -74,7 +72,6 @@ export default function Auth() {
           </div>
         </div>
 
-        {/* button text flips smoothly */}
         <AnimatePresence mode="wait">
           <motion.div
             key={mode}
