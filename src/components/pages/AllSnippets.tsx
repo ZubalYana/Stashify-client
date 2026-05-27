@@ -6,13 +6,14 @@ import SnippetCreation from "../popups/SnippetCreation";
 import SnippetsSearchbar from "../functionalElements/SnippetsSearchbar";
 import SnippetFullView from "../popups/SnippetFullView";
 import type snippet from "../../interfaces/snippet";
+import { AnimatePresence, motion } from "framer-motion";
 // import ToastContainer from "../functionalElements/ToastContainer";
 // import { CheckCircle } from "lucide-react";
 
 export default function AllSnippets() {
   const [creationMode, setCreationMode] = useState<boolean>(false);
   const [snippets, setSnippets] = useState<Array<snippet>>([]);
-  const [selectedSnippet, setSelectedSnippet] = useState<snippet>();
+  const [selectedSnippet, setSelectedSnippet] = useState<snippet | null>(null);
   const [searchText, setSearchText] = useState<string>("");
   // const { toasts, addToast, removeToast } = useToast();
 
@@ -94,7 +95,7 @@ for (int i = 0; i < times; ++i) {
     ]);
   }, []);
 
-  console.log(selectedSnippet)
+  console.log(selectedSnippet);
 
   return (
     <div className="w-full lg:flex-1 lg:w-auto p-[20px] lg:p-[40px]">
@@ -115,7 +116,7 @@ for (int i = 0; i < times; ++i) {
               tags={snippet.tags}
               onEdit={() => console.log("edit")}
               onDelete={() => console.log("delete")}
-              onCardClick={()=> setSelectedSnippet(snippet)}
+              onCardClick={() => setSelectedSnippet(snippet)}
             />
           </div>
         ))}
@@ -138,13 +139,24 @@ for (int i = 0; i < times; ++i) {
         </div>
       )}
 
-      {selectedSnippet && (
-        <div>
-          <SnippetFullView
-          snippet={selectedSnippet}
-          />
-        </div>
-      )}
+      <AnimatePresence>
+        {selectedSnippet && (
+          <motion.div
+            key="backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+            onClick={() => setSelectedSnippet(null)}
+          >
+            <SnippetFullView
+              snippet={selectedSnippet}
+              onClose={() => setSelectedSnippet(null)}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* <ToastContainer toasts={toasts} onDismiss={removeToast} /> */}
     </div>
   );
