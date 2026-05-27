@@ -10,6 +10,7 @@ export interface SnippetCardProps {
   tags?: string[];
   onEdit?: () => void;
   onDelete?: () => void;
+  onCardClick?: () => void;
 }
 
 function previewLines(code: string, max = 8): string {
@@ -49,6 +50,7 @@ export default function SnippetCard({
   tags = [],
   onEdit,
   onDelete,
+  onCardClick
 }: SnippetCardProps) {
   const shouldReduceMotion = useReducedMotion();
   const [copied, setCopied] = useState(false);
@@ -66,6 +68,7 @@ export default function SnippetCard({
                  flex flex-col"
       whileHover={shouldReduceMotion ? {} : { y: -2, borderColor: "rgba(240,112,32,0.18)" }}
       transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+      onClick={()=>onCardClick()}
     >
       <div className="relative bg-[#141414] px-4 pt-4 pb-0 overflow-hidden" style={{ minHeight: "160px" }}>
 

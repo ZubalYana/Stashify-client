@@ -44,7 +44,7 @@ export default function SnippetsSearchbar({ value, onChange, onSearch }: Snippet
           className="
             shrink-0 text-[11px] font-semibold uppercase tracking-wider
             text-[#F07020]/60 hover:text-[#F07020]
-            transition-colors duration-150
+            transition-colors duration-150 cursor-pointer
           "
         >
           Search
