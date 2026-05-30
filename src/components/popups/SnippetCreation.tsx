@@ -3,7 +3,9 @@ import { X, Braces } from "lucide-react"
 import PrimaryButton from "../buttons/PrimaryButton"
 // import hljs from "highlight.js";
 // import "highlight.js/styles/atom-one-dark.css";
-
+// import CodeMirror from "@uiw/react-codemirror";
+// import { cpp } from "@codemirror/lang-cpp";
+// import { oneDark } from "@codemirror/theme-one-dark";
 
 interface SnippetCreationProps {
   onClose: () => void;

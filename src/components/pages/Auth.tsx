@@ -4,6 +4,7 @@ import Input from "../functionalElements/Input";
 import PasswordInput from "../functionalElements/PasswordInput";
 import PrimaryButton from "../buttons/PrimaryButton";
 import WordMarkLogo from "../WordmarkLogo";
+import AnimatedBackground from "../AnimatedBackground";
 
 function useIsMobile() {
   return typeof window != "undefined" && window.innerWidth < 768;
@@ -36,10 +37,10 @@ export default function Auth() {
   };
 
   return (
-    <div className="w-full h-screen flex justify-center items-center bg-[#0a0a0a]">
+    <div className="w-full h-screen flex justify-center items-center bg-[#0a0a0a] overflow-hidden relative">
+      <AnimatedBackground />
       <div className="absolute w-[500px] h-[500px] rounded-full bg-[#F07020]/5 blur-[100px] pointer-events-none" />
-
-      <div className="relative w-full max-w-[420px] mx-4 bg-[#141414] rounded-2xl p-8 border border-white/5 shadow-[0_0_60px_rgba(0,0,0,0.5)]">
+      <div className="relative z-10 w-full max-w-[420px] mx-4 bg-[#141414] rounded-2xl p-8 border border-white/5 shadow-[0_0_60px_rgba(0,0,0,0.5)]">
         <div className="flex justify-center mb-6">
           <WordMarkLogo size="sm" />
         </div>
