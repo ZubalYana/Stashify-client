@@ -13,6 +13,7 @@ export default function SnippetFullView({
   snippet,
   onClose,
 }: SnippetFullViewProps) {
+  
   const highlightedCode = hljs.highlight(snippet.code, {
     language: snippet.language,
   }).value;

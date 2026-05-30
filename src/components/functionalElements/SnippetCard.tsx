@@ -1,6 +1,8 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { Copy, Pencil, Trash2, Check } from "lucide-react";
 import { useState } from "react";
+import hljs from "highlight.js";
+import "highlight.js/styles/atom-one-dark.css";
 
 export interface SnippetCardProps {
   title: string;
@@ -26,6 +28,7 @@ interface ActionButtonProps {
 }
 
 function ActionButton({ onClick, shouldReduceMotion, children, label, danger }: ActionButtonProps) {
+  
   return (
     <motion.button
       aria-label={label}
@@ -46,7 +49,7 @@ export default function SnippetCard({
   title,
   description,
   code,
-//   language,
+  language,
   tags = [],
   onEdit,
   onDelete,
@@ -60,6 +63,10 @@ export default function SnippetCard({
     setCopied(true);
     setTimeout(() => setCopied(false), 1800);
   }
+
+  const highlightedCode = hljs.highlight(code, {
+    language: language,
+  }).value;
 
   return (
     <motion.div
@@ -80,7 +87,9 @@ export default function SnippetCard({
         </motion.div>
 
         <div className="absolute top-3 right-3 flex items-center gap-x-1 z-10
-                        opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                        onClick={(e)=>e.stopPropagation()}
+        >
           <ActionButton label="Copy code" shouldReduceMotion={shouldReduceMotion} onClick={handleCopy}>
             <motion.span
               key={copied ? "check" : "copy"}
@@ -106,9 +115,8 @@ export default function SnippetCard({
           className="text-[11.5px] leading-[1.75] font-mono text-[#B7ADA6]/80
                      whitespace-pre overflow-hidden select-none"
           aria-hidden="true"
-        >
-          {previewLines(code)}
-        </pre>
+          dangerouslySetInnerHTML={{__html: previewLines(highlightedCode)}}
+        />
 
         <div
           className="absolute bottom-0 left-0 right-0 h-14 pointer-events-none"
