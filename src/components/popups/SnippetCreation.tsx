@@ -1,6 +1,9 @@
 import { useState } from "react"
 import { X, Braces } from "lucide-react"
 import PrimaryButton from "../buttons/PrimaryButton"
+// import hljs from "highlight.js";
+// import "highlight.js/styles/atom-one-dark.css";
+
 
 interface SnippetCreationProps {
   onClose: () => void;
@@ -20,6 +23,11 @@ export default function SnippetCreation({ onClose }: SnippetCreationProps) {
       setIsGenerated(true)
     }, 3000)
   }
+
+  // C++ IS A BACKUP LANGUAGE SET IN HERE. ONCE THE BACKEND IS READY, I EXPECT IT TO DETECT THE LANGUAGE FOR HIGHLIGHTING
+  //  const highlightedCode = hljs.highlight(code, {
+  //   language: 'C++',
+  // }).value;
 
   return (
     <div className="w-[90vw] max-w-[760px] bg-[#121212] rounded-2xl p-[20px] lg:p-[25px] lg:p-8 border border-white/10">

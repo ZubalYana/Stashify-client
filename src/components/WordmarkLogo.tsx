@@ -17,7 +17,7 @@ export default function WordMarkLogo({ size }: WordMarkLogoProps) {
   const s = styles[size]
   return (
     <div className="flex items-center gap-x-2">
-      <img src="/StashifyLogo.png" alt="Stashify Logo" className={s.img} />
+      <img src="/StashifyLogoSimplified.png" alt="Stashify Logo" className={s.img} />
       <h3 className={`${s.text} font-medium`}>
         Stash<span className="text-[#F07020]">ify</span>
       </h3>
