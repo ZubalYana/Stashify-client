@@ -1,6 +1,7 @@
-import { useState } from "react"
-import { X, Braces } from "lucide-react"
-import PrimaryButton from "../buttons/PrimaryButton"
+import { useState } from "react";
+import { X, Braces } from "lucide-react";
+import PrimaryButton from "../buttons/PrimaryButton";
+
 // import hljs from "highlight.js";
 // import "highlight.js/styles/atom-one-dark.css";
 // import CodeMirror from "@uiw/react-codemirror";
@@ -16,20 +17,32 @@ export default function SnippetCreation({ onClose }: SnippetCreationProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [isGenerated, setIsGenerated] = useState(false)
 
-  function handleGenerate() {
-    if (!code.trim()) return
-    setIsLoading(true)
-
-    setTimeout(() => {
-      setIsLoading(false)
-      setIsGenerated(true)
-    }, 3000)
-  }
-
   // C++ IS A BACKUP LANGUAGE SET IN HERE. ONCE THE BACKEND IS READY, I EXPECT IT TO DETECT THE LANGUAGE FOR HIGHLIGHTING
   //  const highlightedCode = hljs.highlight(code, {
   //   language: 'C++',
   // }).value;
+
+  const generateResponse = async (code: string) => {
+    try{
+      if (!code.trim()) return
+      setIsLoading(true)
+
+      const aiResponse = await fetch(`${import.meta.env.VITE_API_URL}/snippets/analyze`, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+        },
+        body: JSON.stringify({code})
+      });
+      const data = await aiResponse.json();
+      console.log(data);
+      setIsLoading(false);
+      setIsGenerated(true)
+    }catch(error){
+      console.error(error);
+      setIsLoading(false);
+    }
+  }
 
   return (
     <div className="w-[90vw] max-w-[760px] bg-[#121212] rounded-2xl p-[20px] lg:p-[25px] lg:p-8 border border-white/10">
@@ -76,7 +89,7 @@ export default function SnippetCreation({ onClose }: SnippetCreationProps) {
         <PrimaryButton
           Icon={Braces}
           text={isGenerated ? "Save Snippet" : "Generate Summary"}
-          onClick={isGenerated ? onClose : handleGenerate}
+          onClick={isGenerated ? onClose : ()=>generateResponse(code)}
         />
       </div>
     </div>
