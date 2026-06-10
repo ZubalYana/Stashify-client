@@ -21,78 +21,24 @@ export default function AllSnippets() {
     console.log("Actively searching for your code snippet...");
   };
 
+  function fetchSnippets() {
+    fetch(`${import.meta.env.VITE_API_URL}/snippets?user_id=1`, {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+    .then((res)=>{
+      return res.json();
+    })
+    .then((data)=>{
+      console.log(data)
+      setSnippets(data.snippets)
+    })
+  }
+
   useEffect(() => {
-    setSnippets([
-      {
-        title: "Basic Function",
-        description:
-          "Some brief and comprehensive description AI will generate...",
-        language: "C++",
-        code: `int main() {
-std::string name;
-std::cout << "Your name: ";
-std::getline(std::cin, name);
-
-int times = 0;
-std::cout << "How many times (1-5): ";
-if (!(std::cin >> times) || times < 1 || times > 5) {
-    std::cerr << "Invalid number.\n";
-    return 1;
-}
-
-for (int i = 0; i < times; ++i) {
-    std::cout << i + 1 << ") Hello, " << name << "\n";
-}
-}`,
-        tags: ["C++", "Numbers work", "C++ learning"],
-      },
-      {
-        title: "Basic Function",
-        description:
-          "Some brief and comprehensive description AI will generate...",
-        language: "C++",
-        code: `int main() {
-std::string name;
-std::cout << "Your name: ";
-std::getline(std::cin, name);
-
-int times = 0;
-std::cout << "How many times (1-5): ";
-if (!(std::cin >> times) || times < 1 || times > 5) {
-    std::cerr << "Invalid number.\n";
-    return 1;
-}
-
-for (int i = 0; i < times; ++i) {
-    std::cout << i + 1 << ") Hello, " << name << "\n";
-}
-}`,
-        tags: ["C++", "Numbers work", "C++ learning"],
-      },
-      {
-        title: "Basic Function",
-        description:
-          "Some brief and comprehensive description AI will generate...",
-        language: "C++",
-        code: `int main() {
-std::string name;
-std::cout << "Your name: ";
-std::getline(std::cin, name);
-
-int times = 0;
-std::cout << "How many times (1-5): ";
-if (!(std::cin >> times) || times < 1 || times > 5) {
-    std::cerr << "Invalid number.\n";
-    return 1;
-}
-
-for (int i = 0; i < times; ++i) {
-    std::cout << i + 1 << ") Hello, " << name << "\n";
-}
-}`,
-        tags: ["C++", "Numbers work", "C++ learning"],
-      },
-    ]);
+    fetchSnippets();
   }, []);
 
   console.log(selectedSnippet);
