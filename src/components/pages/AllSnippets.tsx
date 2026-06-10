@@ -7,11 +7,13 @@ import SnippetsSearchbar from "../functionalElements/SnippetsSearchbar";
 import SnippetFullView from "../popups/SnippetFullView";
 import type snippet from "../../interfaces/snippet";
 import { AnimatePresence, motion } from "framer-motion";
+import ConfirmDeleting from "../popups/ConfirmDeleting";
 // import ToastContainer from "../functionalElements/ToastContainer";
 // import { CheckCircle } from "lucide-react";
 
 export default function AllSnippets() {
   const [creationMode, setCreationMode] = useState<boolean>(false);
+  const [deletingSnippet, setDeletingSnippet] = useState<snippet | null>(null);
   const [snippets, setSnippets] = useState<Array<snippet>>([]);
   const [selectedSnippet, setSelectedSnippet] = useState<snippet | null>(null);
   const [searchText, setSearchText] = useState<string>("");
@@ -28,20 +30,33 @@ export default function AllSnippets() {
         "Content-type": "application/json",
       },
     })
-    .then((res)=>{
-      return res.json();
-    })
-    .then((data)=>{
-      console.log(data)
-      setSnippets(data.snippets)
-    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setSnippets(data.snippets);
+      });
   }
 
   useEffect(() => {
     fetchSnippets();
   }, []);
 
-  console.log(selectedSnippet);
+  function deleteSnippet(snippetId) {
+    fetch(`${import.meta.env.VITE_API_URL}/snippets/${snippetId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+      });
+  }
 
   return (
     <div className="w-full lg:flex-1 lg:w-auto p-[20px] lg:p-[40px]">
@@ -52,8 +67,8 @@ export default function AllSnippets() {
         onSearch={() => searchForSippet()}
       />
       <div className="w-full flex flex-col gap-y-6 md:flex-row flex-wrap items-center justify-between mt-4">
-        {snippets.map((snippet, index) => (
-          <div className="w-full md:w-[32%]" key={index}>
+        {snippets.map((snippet) => (
+          <div className="w-full md:w-[32%]" key={snippet.id}>
             <SnippetCard
               title={snippet.title}
               description={snippet.description}
@@ -61,7 +76,9 @@ export default function AllSnippets() {
               code={snippet.code}
               tags={snippet.tags}
               onEdit={() => console.log("edit")}
-              onDelete={() => console.log("delete")}
+              onDelete={() => {
+                setDeletingSnippet(snippet);
+              }}
               onCardClick={() => setSelectedSnippet(snippet)}
             />
           </div>
@@ -104,6 +121,19 @@ export default function AllSnippets() {
         )}
       </AnimatePresence>
       {/* <ToastContainer toasts={toasts} onDismiss={removeToast} /> */}
+
+      <ConfirmDeleting
+        isOpen={deletingSnippet != null ? true : false}
+        onConfirm={() => {
+          if (!deletingSnippet) return;
+          deleteSnippet(deletingSnippet.id);
+          setDeletingSnippet(null);
+        }}
+        onCancel={() => {
+          setDeletingSnippet(null);
+        }}
+        snippetTitle={deletingSnippet?.title}
+      />
     </div>
   );
 }
