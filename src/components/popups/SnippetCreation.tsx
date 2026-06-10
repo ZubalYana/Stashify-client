@@ -90,23 +90,29 @@ export default function SnippetCreation({ onClose }: SnippetCreationProps) {
   };
 
   const handleSave = () => {
-    // TODO: call POST /snippets with { code, title, description, language, tags }
+    fetch(`${import.meta.env.VITE_API_URL}/snippets`, {
+      method: "POST",
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify({title, description, code, language, tags, user_id: 1})
+    })
     onClose();
   };
 
   return (
     <motion.div
-  layout
-  transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-  className="bg-[#121212] rounded-2xl border border-white/10 flex flex-col"
-  style={{
-    width: "min(90vw, 980px)",
-    maxWidth: isGenerated ? "980px" : "720px",
-    maxHeight: "90vh",
-  }}
->
-  <div className="flex items-center justify-between p-6 lg:p-8 pb-4 flex-shrink-0">
-            <h2 className="text-white text-[22px] font-semibold tracking-tight">
+      layout
+      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+      className="bg-[#121212] rounded-2xl border border-white/10 flex flex-col"
+      style={{
+        width: "min(90vw, 980px)",
+        maxWidth: isGenerated ? "980px" : "720px",
+        maxHeight: "90vh",
+      }}
+    >
+      <div className="flex items-center justify-between p-6 lg:p-8 pb-4 flex-shrink-0">
+        <h2 className="text-white text-[22px] font-semibold tracking-tight">
           New snippet
         </h2>
         <button
@@ -117,7 +123,7 @@ export default function SnippetCreation({ onClose }: SnippetCreationProps) {
         </button>
       </div>
 
-  <div className="flex gap-5 items-stretch px-6 lg:px-8 flex-1 min-h-0">  
+      <div className="flex gap-5 items-stretch px-6 lg:px-8 flex-1 min-h-0">
         <div
           className="relative bg-[#0d0d0d] rounded-xl overflow-hidden border border-white/5 flex-shrink-0 transition-all duration-400"
           style={{ width: isGenerated ? "45%" : "100%", minHeight: "220px" }}
@@ -159,7 +165,7 @@ export default function SnippetCreation({ onClose }: SnippetCreationProps) {
               initial="hidden"
               animate="visible"
               exit="hidden"
-              className="flex flex-col gap-4 flex-1 min-w-0 overflow-y-auto pr-1"
+              className="flex flex-col gap-4 flex-1 min-w-0 overflow-y-auto pr-3"
             >
               <motion.div
                 variants={fieldVariants}
@@ -254,7 +260,8 @@ export default function SnippetCreation({ onClose }: SnippetCreationProps) {
         </AnimatePresence>
       </div>
 
-  <div className="flex items-center justify-between px-6 lg:px-8 py-4 flex-shrink-0 border-t border-white/5 mt-2">        <p
+      <div className="flex items-center justify-between px-6 lg:px-8 py-4 flex-shrink-0 mt-2">
+        <p
           className={`text-xs transition-all duration-300 ${
             isLoading
               ? "text-white/35"
@@ -269,7 +276,6 @@ export default function SnippetCreation({ onClose }: SnippetCreationProps) {
             ? "Summary ready — edit before saving"
             : ""}
         </p>
-
         <div className="flex gap-2 ml-auto">
           {isGenerated && (
             <motion.button
