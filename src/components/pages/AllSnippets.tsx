@@ -55,6 +55,8 @@ export default function AllSnippets() {
       })
       .then((data) => {
         console.log(data);
+        addToast({type:'success', Icon:CheckCircle, text:'Snippet deleted successfully.' })
+        setSnippets(prev => prev.filter(s => s.id !== snippetId))
       });
   }
 
