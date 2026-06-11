@@ -77,12 +77,10 @@ export default function SnippetCard({
       transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
       onClick={onCardClick}
     >
-      {/* Code preview area — fixed height so all cards are equal */}
       <div
         className="relative bg-[#141414] overflow-hidden flex-shrink-0"
         style={{ height: "160px" }}
       >
-        {/* Action buttons — z-20 so they sit above the code, bg so code doesn't bleed through */}
         <div
           className="absolute top-3 right-3 flex items-center gap-x-1 z-20
                       opacity-0 group-hover:opacity-100 transition-opacity duration-200
@@ -117,14 +115,12 @@ export default function SnippetCard({
           dangerouslySetInnerHTML={{ __html: previewLines(highlightedCode) }}
         />
 
-        {/* Fade out gradient at the bottom of the code area */}
         <div
           className="absolute bottom-0 left-0 right-0 h-14 pointer-events-none"
           style={{ background: "linear-gradient(to bottom, transparent, #141414)" }}
         />
       </div>
 
-      {/* Card body — fixed min-height so cards with no tags still match cards with tags */}
       <div className="px-4 pt-3 pb-4 flex flex-col gap-y-[6px] flex-1">
         <h3 className="text-[16px] font-semibold text-[#F07020] leading-snug truncate">
           {title}
