@@ -46,38 +46,48 @@ export default function AllSnippets() {
       .then((res) => res.json())
       .then(() => {
         setSnippets((prev) => prev.filter((s) => s.id !== snippetId));
-        addToast({ type: "success", Icon: CheckCircle, text: "Snippet deleted successfully." });
+        addToast({
+          type: "success",
+          Icon: CheckCircle,
+          text: "Snippet deleted successfully.",
+        });
       });
   }
 
   return (
     <div className="w-full lg:flex-1 lg:w-auto p-[20px] lg:p-[40px]">
-      <h3 className="text-[24px] lg:text-[20px] font-semibold">All snippets</h3>
-      <SnippetsSearchbar
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-        onSearch={() => searchForSnippet()}
-      />
-
-      {/*
-        Grid instead of flexbox + justify-between.
-        This way 2 cards sit left-aligned rather than spreading to opposite edges.
-      */}
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-        {snippets.map((snippet) => (
-          <SnippetCard
-            key={snippet.id}
-            title={snippet.title}
-            description={snippet.description}
-            language={snippet.language}
-            code={snippet.code}
-            tags={snippet.tags}
-            onEdit={() => console.log("edit")}
-            onDelete={() => setDeletingSnippet(snippet)}
-            onCardClick={() => setSelectedSnippet(snippet)}
+      {snippets.length === 0 ? (
+        <div className="w-full h-full flex justify-center items-center">
+          <h3 className="opacity-[0.7]">No snippets here yet. Ready to create one?</h3>
+        </div>
+      ) : (
+        <div>
+          <h3 className="text-[24px] lg:text-[20px] font-semibold">
+            All snippets
+          </h3>
+          <SnippetsSearchbar
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onSearch={() => searchForSnippet()}
           />
-        ))}
-      </div>
+
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+            {snippets.map((snippet) => (
+              <SnippetCard
+                key={snippet.id}
+                title={snippet.title}
+                description={snippet.description}
+                language={snippet.language}
+                code={snippet.code}
+                tags={snippet.tags}
+                onEdit={() => console.log("edit")}
+                onDelete={() => setDeletingSnippet(snippet)}
+                onCardClick={() => setSelectedSnippet(snippet)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       <NewSnippet onAddNewSnippet={() => setCreationMode(true)} />
 
