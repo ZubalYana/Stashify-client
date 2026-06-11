@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-// import { useToast } from "../hooks/useToast";
+import { useToast } from "../hooks/useToast";
 import SnippetCard from "../functionalElements/SnippetCard";
 import NewSnippet from "../buttons/NewSnippet";
 import SnippetCreation from "../popups/SnippetCreation";
@@ -8,8 +8,8 @@ import SnippetFullView from "../popups/SnippetFullView";
 import type snippet from "../../interfaces/snippet";
 import { AnimatePresence, motion } from "framer-motion";
 import ConfirmDeleting from "../popups/ConfirmDeleting";
-// import ToastContainer from "../functionalElements/ToastContainer";
-// import { CheckCircle } from "lucide-react";
+import ToastContainer from "../functionalElements/ToastContainer";
+import { CheckCircle } from "lucide-react";
 
 export default function AllSnippets() {
   const [creationMode, setCreationMode] = useState<boolean>(false);
@@ -17,7 +17,7 @@ export default function AllSnippets() {
   const [snippets, setSnippets] = useState<Array<snippet>>([]);
   const [selectedSnippet, setSelectedSnippet] = useState<snippet | null>(null);
   const [searchText, setSearchText] = useState<string>("");
-  // const { toasts, addToast, removeToast } = useToast();
+  const { toasts, addToast, removeToast } = useToast();
 
   const searchForSippet = () => {
     console.log("Actively searching for your code snippet...");
@@ -94,10 +94,18 @@ export default function AllSnippets() {
           <div
             onClick={(e) => {
               e.stopPropagation();
-              // addToast({ Icon: CheckCircle, type: "success", text: "Snippet saved!" })
             }}
           >
-            <SnippetCreation onClose={() => setCreationMode(false)} />
+            <SnippetCreation
+              onClose={() => setCreationMode(false)}
+              onCreate={() =>
+                addToast({
+                  type: "success",
+                  text: "Snippet created successfully!",
+                  Icon: CheckCircle,
+                })
+              }
+            />
           </div>
         </div>
       )}
@@ -120,7 +128,7 @@ export default function AllSnippets() {
           </motion.div>
         )}
       </AnimatePresence>
-      {/* <ToastContainer toasts={toasts} onDismiss={removeToast} /> */}
+      <ToastContainer toasts={toasts} onDismiss={removeToast} />
 
       <ConfirmDeleting
         isOpen={deletingSnippet != null ? true : false}

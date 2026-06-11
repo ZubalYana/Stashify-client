@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 interface SnippetCreationProps {
   onClose: () => void;
+  onCreate: () => void;
 }
 
 interface SnippetAnalysis {
@@ -29,7 +30,7 @@ const containerVariants = {
   },
 };
 
-export default function SnippetCreation({ onClose }: SnippetCreationProps) {
+export default function SnippetCreation({ onClose, onCreate }: SnippetCreationProps) {
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
@@ -98,6 +99,7 @@ export default function SnippetCreation({ onClose }: SnippetCreationProps) {
       body: JSON.stringify({title, description, code, language, tags, user_id: 1})
     })
     onClose();
+    onCreate();
   };
 
   return (
