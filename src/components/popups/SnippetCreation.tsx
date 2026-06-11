@@ -153,7 +153,6 @@ export default function SnippetCreation({ onClose, onCreate }: SnippetCreationPr
             spellCheck={false}
           />
 
-          {/* Scan animation */}
           {isLoading && (
             <div className="absolute inset-0 pointer-events-none">
               <div className="absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#F07020] to-transparent animate-scan" />
@@ -161,7 +160,6 @@ export default function SnippetCreation({ onClose, onCreate }: SnippetCreationPr
             </div>
           )}
 
-          {/* Overlay tint while loading */}
           {isLoading && (
             <div className="absolute inset-0 bg-[#0d0d0d]/40 pointer-events-none" />
           )}

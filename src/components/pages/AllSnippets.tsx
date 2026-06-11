@@ -9,11 +9,13 @@ import type snippet from "../../interfaces/snippet";
 import { AnimatePresence, motion } from "framer-motion";
 import ConfirmDeleting from "../popups/ConfirmDeleting";
 import ToastContainer from "../functionalElements/ToastContainer";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, CircleCheck } from "lucide-react";
+import SnippetEditing from "../popups/SnippetEditing";
 
 export default function AllSnippets() {
   const [creationMode, setCreationMode] = useState<boolean>(false);
   const [deletingSnippet, setDeletingSnippet] = useState<snippet | null>(null);
+  const [editingSnippet, setEditingSnippet] = useState<snippet | null>(null);
   const [snippets, setSnippets] = useState<Array<snippet>>([]);
   const [selectedSnippet, setSelectedSnippet] = useState<snippet | null>(null);
   const [searchText, setSearchText] = useState<string>("");
@@ -80,7 +82,7 @@ export default function AllSnippets() {
                 language={snippet.language}
                 code={snippet.code}
                 tags={snippet.tags}
-                onEdit={() => console.log("edit")}
+                onEdit={() => setEditingSnippet(snippet)}
                 onDelete={() => setDeletingSnippet(snippet)}
                 onCardClick={() => setSelectedSnippet(snippet)}
               />
@@ -144,6 +146,31 @@ export default function AllSnippets() {
         onCancel={() => setDeletingSnippet(null)}
         snippetTitle={deletingSnippet?.title}
       />
+
+            <AnimatePresence>
+        {editingSnippet && (
+          <motion.div
+            key="backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+            onClick={() => setSelectedSnippet(null)}
+          >
+            <SnippetEditing
+              editingSnippet={editingSnippet}
+              onClose={() => setEditingSnippet(null)}
+              onEdited={
+                (newSnippet)=>{
+                  setSnippets(prev => prev.map(s => s.id === newSnippet.id ? newSnippet : s));
+                  addToast({type: 'success', text: 'Snippet edited successfully!', Icon: CircleCheck})
+                }
+              }
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
