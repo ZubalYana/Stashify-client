@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { X, Braces, Plus, Sparkles, Save } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import type snippet from "../../interfaces/snippet";
 
 interface SnippetCreationProps {
   onClose: () => void;
-  onCreate: () => void;
+  onCreate: (snippet) => void;
 }
 
 interface SnippetAnalysis {
@@ -98,8 +99,14 @@ export default function SnippetCreation({ onClose, onCreate }: SnippetCreationPr
       },
       body: JSON.stringify({title, description, code, language, tags, user_id: 1})
     })
-    onClose();
-    onCreate();
+    .then((res)=>{
+      return res.json();
+    })
+    .then((data)=>{
+      onCreate(data.snippet);
+      onClose();
+    })
+    
   };
 
   return (

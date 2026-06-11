@@ -98,13 +98,14 @@ export default function AllSnippets() {
           >
             <SnippetCreation
               onClose={() => setCreationMode(false)}
-              onCreate={() =>
+              onCreate={(snippet) => {
                 addToast({
                   type: "success",
                   text: "Snippet created successfully!",
                   Icon: CheckCircle,
                 })
-              }
+                setSnippets(prev=>[...prev, snippet])
+              }}
             />
           </div>
         </div>
