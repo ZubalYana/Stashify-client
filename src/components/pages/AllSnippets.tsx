@@ -19,22 +19,17 @@ export default function AllSnippets() {
   const [searchText, setSearchText] = useState<string>("");
   const { toasts, addToast, removeToast } = useToast();
 
-  const searchForSippet = () => {
+  const searchForSnippet = () => {
     console.log("Actively searching for your code snippet...");
   };
 
   function fetchSnippets() {
     fetch(`${import.meta.env.VITE_API_URL}/snippets?user_id=1`, {
       method: "GET",
-      headers: {
-        "Content-type": "application/json",
-      },
+      headers: { "Content-type": "application/json" },
     })
-      .then((res) => {
-        return res.json();
-      })
+      .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setSnippets(data.snippets);
       });
   }
@@ -46,17 +41,12 @@ export default function AllSnippets() {
   function deleteSnippet(snippetId) {
     fetch(`${import.meta.env.VITE_API_URL}/snippets/${snippetId}`, {
       method: "DELETE",
-      headers: {
-        "Content-type": "application/json",
-      },
+      headers: { "Content-type": "application/json" },
     })
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
-        addToast({type:'success', Icon:CheckCircle, text:'Snippet deleted successfully.' })
-        setSnippets(prev => prev.filter(s => s.id !== snippetId))
+      .then((res) => res.json())
+      .then(() => {
+        setSnippets((prev) => prev.filter((s) => s.id !== snippetId));
+        addToast({ type: "success", Icon: CheckCircle, text: "Snippet deleted successfully." });
       });
   }
 
@@ -66,26 +56,29 @@ export default function AllSnippets() {
       <SnippetsSearchbar
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
-        onSearch={() => searchForSippet()}
+        onSearch={() => searchForSnippet()}
       />
-      <div className="w-full flex flex-col gap-y-6 md:flex-row flex-wrap items-center justify-between mt-4">
+
+      {/*
+        Grid instead of flexbox + justify-between.
+        This way 2 cards sit left-aligned rather than spreading to opposite edges.
+      */}
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
         {snippets.map((snippet) => (
-          <div className="w-full md:w-[32%]" key={snippet.id}>
-            <SnippetCard
-              title={snippet.title}
-              description={snippet.description}
-              language={snippet.language}
-              code={snippet.code}
-              tags={snippet.tags}
-              onEdit={() => console.log("edit")}
-              onDelete={() => {
-                setDeletingSnippet(snippet);
-              }}
-              onCardClick={() => setSelectedSnippet(snippet)}
-            />
-          </div>
+          <SnippetCard
+            key={snippet.id}
+            title={snippet.title}
+            description={snippet.description}
+            language={snippet.language}
+            code={snippet.code}
+            tags={snippet.tags}
+            onEdit={() => console.log("edit")}
+            onDelete={() => setDeletingSnippet(snippet)}
+            onCardClick={() => setSelectedSnippet(snippet)}
+          />
         ))}
       </div>
+
       <NewSnippet onAddNewSnippet={() => setCreationMode(true)} />
 
       {creationMode && (
@@ -93,11 +86,7 @@ export default function AllSnippets() {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
           onClick={() => setCreationMode(false)}
         >
-          <div
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
+          <div onClick={(e) => e.stopPropagation()}>
             <SnippetCreation
               onClose={() => setCreationMode(false)}
               onCreate={(snippet) => {
@@ -105,8 +94,9 @@ export default function AllSnippets() {
                   type: "success",
                   text: "Snippet created successfully!",
                   Icon: CheckCircle,
-                })
-                setSnippets(prev=>[...prev, snippet])
+                });
+                setSnippets((prev) => [...prev, snippet]);
+                setCreationMode(false);
               }}
             />
           </div>
@@ -131,18 +121,17 @@ export default function AllSnippets() {
           </motion.div>
         )}
       </AnimatePresence>
+
       <ToastContainer toasts={toasts} onDismiss={removeToast} />
 
       <ConfirmDeleting
-        isOpen={deletingSnippet != null ? true : false}
+        isOpen={deletingSnippet !== null}
         onConfirm={() => {
           if (!deletingSnippet) return;
           deleteSnippet(deletingSnippet.id);
           setDeletingSnippet(null);
         }}
-        onCancel={() => {
-          setDeletingSnippet(null);
-        }}
+        onCancel={() => setDeletingSnippet(null)}
         snippetTitle={deletingSnippet?.title}
       />
     </div>

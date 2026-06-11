@@ -28,7 +28,6 @@ interface ActionButtonProps {
 }
 
 function ActionButton({ onClick, shouldReduceMotion, children, label, danger }: ActionButtonProps) {
-  
   return (
     <motion.button
       aria-label={label}
@@ -58,7 +57,8 @@ export default function SnippetCard({
   const shouldReduceMotion = useReducedMotion();
   const [copied, setCopied] = useState(false);
 
-  function handleCopy() {
+  function handleCopy(e: React.MouseEvent) {
+    e.stopPropagation();
     navigator.clipboard.writeText(code);
     setCopied(true);
     setTimeout(() => setCopied(false), 1800);
@@ -72,25 +72,24 @@ export default function SnippetCard({
     <motion.div
       className="group relative w-full rounded-[16px] overflow-hidden
                  bg-[#1C1C1C] border border-white/[0.06]
-                 flex flex-col"
+                 flex flex-col cursor-pointer"
       whileHover={shouldReduceMotion ? {} : { y: -2, borderColor: "rgba(240,112,32,0.18)" }}
       transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-      onClick={()=>onCardClick()}
+      onClick={onCardClick}
     >
-      <div className="relative bg-[#141414] px-4 pt-4 pb-0 overflow-hidden" style={{ minHeight: "160px" }}>
-
-        <motion.div
-          className="absolute top-3 right-3 flex items-center gap-x-1 z-10"
-          initial={{ opacity: 0 }}
-          whileHover={{ opacity: 1 }}
+      {/* Code preview area — fixed height so all cards are equal */}
+      <div
+        className="relative bg-[#141414] overflow-hidden flex-shrink-0"
+        style={{ height: "160px" }}
+      >
+        {/* Action buttons — z-20 so they sit above the code, bg so code doesn't bleed through */}
+        <div
+          className="absolute top-3 right-3 flex items-center gap-x-1 z-20
+                      opacity-0 group-hover:opacity-100 transition-opacity duration-200
+                      bg-[#141414]/80 backdrop-blur-sm rounded-[10px] p-0.5"
+          onClick={(e) => e.stopPropagation()}
         >
-        </motion.div>
-
-        <div className="absolute top-3 right-3 flex items-center gap-x-1 z-10
-                        opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                        onClick={(e)=>e.stopPropagation()}
-        >
-          <ActionButton label="Copy code" shouldReduceMotion={shouldReduceMotion} onClick={handleCopy}>
+          <ActionButton label="Copy code" shouldReduceMotion={shouldReduceMotion} onClick={()=>handleCopy}>
             <motion.span
               key={copied ? "check" : "copy"}
               initial={{ scale: 0.7, opacity: 0 }}
@@ -113,20 +112,20 @@ export default function SnippetCard({
 
         <pre
           className="text-[11.5px] leading-[1.75] font-mono text-[#B7ADA6]/80
-                     whitespace-pre overflow-hidden select-none"
+                     whitespace-pre overflow-hidden select-none px-4 pt-4"
           aria-hidden="true"
-          dangerouslySetInnerHTML={{__html: previewLines(highlightedCode)}}
+          dangerouslySetInnerHTML={{ __html: previewLines(highlightedCode) }}
         />
 
+        {/* Fade out gradient at the bottom of the code area */}
         <div
           className="absolute bottom-0 left-0 right-0 h-14 pointer-events-none"
-          style={{
-            background: "linear-gradient(to bottom, transparent, #141414)",
-          }}
+          style={{ background: "linear-gradient(to bottom, transparent, #141414)" }}
         />
       </div>
 
-      <div className="px-4 pt-3 pb-4 flex flex-col gap-y-[6px]">
+      {/* Card body — fixed min-height so cards with no tags still match cards with tags */}
+      <div className="px-4 pt-3 pb-4 flex flex-col gap-y-[6px] flex-1">
         <h3 className="text-[16px] font-semibold text-[#F07020] leading-snug truncate">
           {title}
         </h3>
