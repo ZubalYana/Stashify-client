@@ -11,6 +11,7 @@ import ConfirmDeleting from "../popups/ConfirmDeleting";
 import ToastContainer from "../functionalElements/ToastContainer";
 import { CheckCircle, CircleCheck } from "lucide-react";
 import SnippetEditing from "../popups/SnippetEditing";
+import { useNavigate } from "react-router-dom";
 
 export default function AllSnippets() {
   const [creationMode, setCreationMode] = useState<boolean>(false);
@@ -20,18 +21,29 @@ export default function AllSnippets() {
   const [selectedSnippet, setSelectedSnippet] = useState<snippet | null>(null);
   const [searchText, setSearchText] = useState<string>("");
   const { toasts, addToast, removeToast } = useToast();
+  const navigate = useNavigate();
 
   const searchForSnippet = () => {
     console.log("Actively searching for your code snippet...");
   };
 
+  const user = JSON.parse(localStorage.getItem('user'));
+  const token = localStorage.getItem('token');
+  if(!token){
+    navigate('/auth');
+  };
+
   function fetchSnippets() {
-    fetch(`${import.meta.env.VITE_API_URL}/snippets?user_id=1`, {
+    fetch(`${import.meta.env.VITE_API_URL}/snippets?user_id=${user.user_id}`, {
       method: "GET",
-      headers: { "Content-type": "application/json" },
+      headers: { 
+        "Content-type": "application/json",
+        "Authorization": `Bearer ${token}`
+       },
     })
       .then((res) => res.json())
       .then((data) => {
+        console.log(data.snippets)
         setSnippets(data.snippets);
       });
   }
@@ -43,7 +55,10 @@ export default function AllSnippets() {
   function deleteSnippet(snippetId) {
     fetch(`${import.meta.env.VITE_API_URL}/snippets/${snippetId}`, {
       method: "DELETE",
-      headers: { "Content-type": "application/json" },
+      headers: { 
+        "Content-type": "application/json",
+        'Authorization': `Bearer ${token}`
+       },
     })
       .then((res) => res.json())
       .then(() => {

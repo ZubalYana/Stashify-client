@@ -3,6 +3,7 @@ import { X, Braces, Plus, Sparkles, Save } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import type snippet from "../../interfaces/snippet";
 import ScanOverlay from "../functionalElements/ScanOverlay";
+import { useNavigate } from "react-router-dom";
 
 interface SnippetCreationProps {
   onClose: () => void;
@@ -42,6 +43,13 @@ export default function SnippetCreation({ onClose, onCreate }: SnippetCreationPr
   const [language, setLanguage] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user'));
+  if(!token){
+    navigate('/auth');
+  }
 
   const generateResponse = async (code: string) => {
     try {
@@ -53,7 +61,10 @@ export default function SnippetCreation({ onClose, onCreate }: SnippetCreationPr
         `${import.meta.env.VITE_API_URL}/snippets/analyze`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+           },
           body: JSON.stringify({ code }),
         }
       );
@@ -96,9 +107,10 @@ export default function SnippetCreation({ onClose, onCreate }: SnippetCreationPr
     fetch(`${import.meta.env.VITE_API_URL}/snippets`, {
       method: "POST",
       headers: {
-        'Content-type': 'application/json'
+        'Content-type': 'application/json',
+        "Authorization": `Bearer ${token}`
       },
-      body: JSON.stringify({title, description, code, language, tags, user_id: 1})
+      body: JSON.stringify({title, description, code, language, tags, user_id: user.user_id })
     })
     .then((res)=>{
       return res.json();

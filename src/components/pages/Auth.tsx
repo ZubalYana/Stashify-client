@@ -5,6 +5,7 @@ import PasswordInput from "../functionalElements/PasswordInput";
 import PrimaryButton from "../buttons/PrimaryButton";
 import WordMarkLogo from "../WordmarkLogo";
 import AnimatedBackground from "../AnimatedBackground";
+import { useNavigate } from "react-router-dom";
 
 function useIsMobile() {
   return typeof window != "undefined" && window.innerWidth < 768;
@@ -17,6 +18,7 @@ export default function Auth() {
   const [password, setPassword] = useState("");
   const isLogin = mode === "login";
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
 
   const fieldVariants = isMobile
     ? {
@@ -28,11 +30,67 @@ export default function Auth() {
         visible: { opacity: 1, height: "auto", marginBottom: 12 },
       };
 
+  const logIn = async (email, password) => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      console.log(data);
+      console.log("Token:", data.token);
+      localStorage.setItem("token", data.token);
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          user_id: data.user.id,
+          userEmail: data.user.email,
+          userName: data.user.name,
+        })
+      );
+      navigate("/");
+    } catch (error) {
+      console.log(error); //to be replaced with toast later
+    }
+  };
+
+  const register = async (name, email, password) => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await res.json();
+
+      console.log(data);
+      console.log("Token:", data.token);
+      localStorage.setItem("token", data.token);
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          user_id: data.user.id,
+          userEmail: data.user.email,
+          userName: data.user.name,
+        })
+      );
+      navigate("/");
+    } catch (error) {
+      console.log(error); //to be replaced with a toast later
+    }
+  };
+
   const handleSubmit = () => {
     if (isLogin) {
-      console.log(email, password, "logged in");
+      logIn(email, password);
     } else {
-      console.log(name, email, password, "signed up");
+      register(name, email, password);
     }
   };
 

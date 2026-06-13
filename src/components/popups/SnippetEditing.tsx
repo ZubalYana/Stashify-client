@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Plus, Save, Sparkles, AlertTriangle } from "lucide-react";
 import { useState, useEffect } from "react";
 import ScanOverlay from "../functionalElements/ScanOverlay";
+import { useNavigate } from "react-router-dom";
 
 interface SnippetEditingProps {
   onClose: () => void;
@@ -41,6 +42,12 @@ export default function SnippetEditing({
   const [isReanalyzing, setIsReanalyzing] = useState(false);
   const [reanalyzeWarning, setReanalyzeWarning] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem('token');
+  if (!token){
+    navigate('/');
+  }
 
   useEffect(() => {
     setCode(editingSnippet.code);
@@ -86,7 +93,10 @@ export default function SnippetEditing({
         `${import.meta.env.VITE_API_URL}/snippets/analyze`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+           },
           body: JSON.stringify({ code }),
         }
       );
@@ -106,7 +116,10 @@ export default function SnippetEditing({
     setIsSaving(true);
     fetch(`${import.meta.env.VITE_API_URL}/snippets/${editingSnippet.id}`, {
       method: "PATCH",
-      headers: { "Content-type": "application/json" },
+      headers: { 
+        "Content-type": "application/json",
+        "Authorization": `Bearer ${token}`
+       },
       body: JSON.stringify({ title, description, code, language, tags }),
     })
       .then((res) => res.json())
