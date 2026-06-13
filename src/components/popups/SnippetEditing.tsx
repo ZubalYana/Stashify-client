@@ -2,6 +2,7 @@ import type snippet from "../../interfaces/snippet";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Plus, Save, Sparkles, AlertTriangle } from "lucide-react";
 import { useState, useEffect } from "react";
+import ScanOverlay from "../functionalElements/ScanOverlay";
 
 interface SnippetEditingProps {
   onClose: () => void;
@@ -151,13 +152,7 @@ export default function SnippetEditing({
           style={{ width: "45%", minHeight: "220px" }}
         >
           {isReanalyzing && (
-            <>
-              <div className="absolute inset-0 pointer-events-none z-10">
-                <div className="absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#F07020] to-transparent animate-scan" />
-                <div className="absolute left-0 right-0 h-24 bg-gradient-to-b from-[#F07020]/8 to-transparent animate-scan" />
-              </div>
-              <div className="absolute inset-0 bg-[#0d0d0d]/40 pointer-events-none z-10" />
-            </>
+            <ScanOverlay/>
           )}
           <textarea
             value={code}
