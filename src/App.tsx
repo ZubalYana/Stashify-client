@@ -1,22 +1,50 @@
-import './App.css'
-import { Route, Routes } from 'react-router-dom'
-import MenuLayout from './components/functionalElements/MenuLayout'
-import AllSnippets from './components/pages/AllSnippets';
-import Collections from './components/pages/Collections';
-import Projects from './components/pages/Projects';
-import Auth from './components/pages/Auth';
+import "./App.css";
+import { Route, Routes } from "react-router-dom";
+import MenuLayout from "./components/functionalElements/MenuLayout";
+import AllSnippets from "./components/pages/AllSnippets";
+import Collections from "./components/pages/Collections";
+import Projects from "./components/pages/Projects";
+import Auth from "./components/pages/Auth";
+import ProtectedRoute from "./components/functionalElements/ProtectedRoute";
 
 function App() {
   return (
-    <div className='w-full'>
-    <Routes>
-      <Route path='/' element={<MenuLayout><AllSnippets/></MenuLayout>}/>
-      <Route path='/collections' element={<MenuLayout><Collections/></MenuLayout>}/>
-      <Route path='/projects' element={<MenuLayout><Projects/></MenuLayout>}/>
-      <Route path='/auth' element={<Auth/>}/>
-    </Routes>
+    <div className="w-full">
+      <Routes>
+        <Route path="/auth" element={<Auth />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <MenuLayout>
+                <AllSnippets />
+              </MenuLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/collections"
+          element={
+            <ProtectedRoute>
+              <MenuLayout>
+                <Collections />
+              </MenuLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects"
+          element={
+            <ProtectedRoute>
+              <MenuLayout>
+                <Projects />
+              </MenuLayout>
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
