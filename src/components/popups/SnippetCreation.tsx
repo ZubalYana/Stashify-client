@@ -2,6 +2,7 @@ import { useState } from "react";
 import { X, Braces, Plus, Sparkles, Save } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import type snippet from "../../interfaces/snippet";
+import ScanOverlay from "../functionalElements/ScanOverlay";
 
 interface SnippetCreationProps {
   onClose: () => void;
@@ -153,16 +154,7 @@ export default function SnippetCreation({ onClose, onCreate }: SnippetCreationPr
             spellCheck={false}
           />
 
-          {isLoading && (
-            <div className="absolute inset-0 pointer-events-none">
-              <div className="absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#F07020] to-transparent animate-scan" />
-              <div className="absolute left-0 right-0 h-24 bg-gradient-to-b from-[#F07020]/8 to-transparent animate-scan" />
-            </div>
-          )}
-
-          {isLoading && (
-            <div className="absolute inset-0 bg-[#0d0d0d]/40 pointer-events-none" />
-          )}
+          {isLoading && <ScanOverlay />}
         </div>
         <AnimatePresence>
           {isGenerated && (
