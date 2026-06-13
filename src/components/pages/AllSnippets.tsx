@@ -43,7 +43,6 @@ export default function AllSnippets() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.snippets)
         setSnippets(data.snippets);
       });
   }

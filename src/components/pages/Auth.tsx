@@ -6,6 +6,9 @@ import PrimaryButton from "../buttons/PrimaryButton";
 import WordMarkLogo from "../WordmarkLogo";
 import AnimatedBackground from "../AnimatedBackground";
 import { useNavigate, Navigate } from "react-router-dom";
+import { useToast } from "../hooks/useToast";
+import { CircleX } from "lucide-react";
+import ToastContainer from "../functionalElements/ToastContainer";
 
 function useIsMobile() {
   return typeof window != "undefined" && window.innerWidth < 768;
@@ -19,6 +22,7 @@ export default function Auth() {
   const isLogin = mode === "login";
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const { toasts, addToast, removeToast } = useToast();
 
   const token = localStorage.getItem("token");
   if (token) return <Navigate to="/" replace />;
@@ -42,9 +46,11 @@ export default function Auth() {
         },
         body: JSON.stringify({ email, password }),
       });
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message);
+      }
       const data = await res.json();
-      console.log(data);
-      console.log("Token:", data.token);
       localStorage.setItem("token", data.token);
       localStorage.setItem(
         "user",
@@ -56,7 +62,11 @@ export default function Auth() {
       );
       navigate("/");
     } catch (error) {
-      console.log(error); //to be replaced with toast later
+      addToast({
+        type: "error",
+        Icon: CircleX,
+        text: "Error logging you in.",
+      });
     }
   };
 
@@ -69,11 +79,11 @@ export default function Auth() {
         },
         body: JSON.stringify({ name, email, password }),
       });
-
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message);
+      }
       const data = await res.json();
-
-      console.log(data);
-      console.log("Token:", data.token);
       localStorage.setItem("token", data.token);
       localStorage.setItem(
         "user",
@@ -85,7 +95,11 @@ export default function Auth() {
       );
       navigate("/");
     } catch (error) {
-      console.log(error); //to be replaced with a toast later
+      addToast({
+        type: "error",
+        Icon: CircleX,
+        text: "Error signing you up.",
+      });
     }
   };
 
@@ -186,6 +200,7 @@ export default function Auth() {
           </button>
         </p>
       </div>
+      <ToastContainer toasts={toasts} onDismiss={removeToast} />
     </div>
   );
 }

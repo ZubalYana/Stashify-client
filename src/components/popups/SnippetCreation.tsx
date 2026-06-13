@@ -70,7 +70,6 @@ export default function SnippetCreation({ onClose, onCreate }: SnippetCreationPr
       );
 
       const data = await aiResponse.json();
-      console.log("raw data:", data);
       const analysis: SnippetAnalysis = data;
 
       setTitle(analysis.title);
