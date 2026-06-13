@@ -5,7 +5,7 @@ import PasswordInput from "../functionalElements/PasswordInput";
 import PrimaryButton from "../buttons/PrimaryButton";
 import WordMarkLogo from "../WordmarkLogo";
 import AnimatedBackground from "../AnimatedBackground";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 
 function useIsMobile() {
   return typeof window != "undefined" && window.innerWidth < 768;
@@ -19,6 +19,9 @@ export default function Auth() {
   const isLogin = mode === "login";
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+
+  const token = localStorage.getItem("token");
+  if (token) return <Navigate to="/" replace />;
 
   const fieldVariants = isMobile
     ? {
