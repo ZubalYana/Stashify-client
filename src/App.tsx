@@ -6,6 +6,7 @@ import Collections from "./components/pages/Collections";
 import Projects from "./components/pages/Projects";
 import Auth from "./components/pages/Auth";
 import ProtectedRoute from "./components/functionalElements/ProtectedRoute";
+import UserProfile from "./components/pages/UserProfile";
 
 function App() {
   return (
@@ -38,6 +39,16 @@ function App() {
             <ProtectedRoute>
               <MenuLayout>
                 <Projects />
+              </MenuLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <MenuLayout>
+                <UserProfile />
               </MenuLayout>
             </ProtectedRoute>
           }

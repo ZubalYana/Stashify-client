@@ -200,21 +200,26 @@ export default function SideMenu() {
           </NavLink>
         </nav>
         <div className="flex flex-col gap-y-[2px] pt-4 border-t border-white/[0.05]">
-          {[
-            { label: "Profile", icon: <User size={16} strokeWidth={1} /> },
-            { label: "Settings", icon: <Settings size={16} strokeWidth={1} /> },
-          ].map(({ label, icon }) => (
+          <NavLink to="/profile">
             <motion.button
-              key={label}
               className="w-full flex items-center gap-x-2 text-[13px] font-normal
                        text-[#B7ADA6] hover:text-white rounded-[12px] px-3 py-2
                        hover:bg-white/[0.04] transition-colors duration-150 cursor-pointer"
               whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
             >
-              {icon}
-              {label}
+              <User size={16} strokeWidth={1} />
+              Profile
             </motion.button>
-          ))}
+          </NavLink>
+          <motion.button
+            className="w-full flex items-center gap-x-2 text-[13px] font-normal
+                       text-[#B7ADA6] hover:text-white rounded-[12px] px-3 py-2
+                       hover:bg-white/[0.04] transition-colors duration-150 cursor-pointer"
+            whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
+          >
+            <Settings size={16} strokeWidth={1} />
+            Settings
+          </motion.button>
         </div>
       </div>
       <div className="flex lg:hidden">
