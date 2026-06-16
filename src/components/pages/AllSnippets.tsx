@@ -9,9 +9,10 @@ import type snippet from "../../interfaces/snippet";
 import { AnimatePresence, motion } from "framer-motion";
 import ConfirmDeleting from "../popups/ConfirmDeleting";
 import ToastContainer from "../functionalElements/ToastContainer";
-import { CheckCircle, CircleCheck } from "lucide-react";
+import { CheckCircle, CircleCheck, CircleX } from "lucide-react";
 import SnippetEditing from "../popups/SnippetEditing";
 import { useNavigate } from "react-router-dom";
+import { apiFetch } from "../../utils/apiFetch";
 
 export default function AllSnippets() {
   const [creationMode, setCreationMode] = useState<boolean>(false);
@@ -27,54 +28,49 @@ export default function AllSnippets() {
     console.log("Actively searching for your code snippet...");
   };
 
-  const user = JSON.parse(localStorage.getItem('user'));
-  const token = localStorage.getItem('token');
-  if(!token){
-    navigate('/auth');
-  };
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = localStorage.getItem("token");
+  if (!token) {
+    navigate("/auth");
+  }
 
-  function fetchSnippets() {
-    fetch(`${import.meta.env.VITE_API_URL}/snippets?user_id=${user.user_id}`, {
+  async function fetchSnippets() {
+    const res = await apiFetch(`/snippets?user_id=${user.user_id}`, {
       method: "GET",
-      headers: { 
-        "Content-type": "application/json",
-        "Authorization": `Bearer ${token}`
-       },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setSnippets(data.snippets);
-      });
+    });
+    const data = await res.json();
+    setSnippets(data.snippets);
   }
 
   useEffect(() => {
     fetchSnippets();
   }, []);
 
-  function deleteSnippet(snippetId) {
-    fetch(`${import.meta.env.VITE_API_URL}/snippets/${snippetId}`, {
-      method: "DELETE",
-      headers: { 
-        "Content-type": "application/json",
-        'Authorization': `Bearer ${token}`
-       },
-    })
-      .then((res) => res.json())
-      .then(() => {
-        setSnippets((prev) => prev.filter((s) => s.id !== snippetId));
-        addToast({
-          type: "success",
-          Icon: CheckCircle,
-          text: "Snippet deleted successfully.",
-        });
+  async function deleteSnippet(snippetId) {
+    try {
+      await apiFetch(`/snippets/${snippetId}`, { method: "DELETE" });
+      setSnippets((prev) => prev.filter((s) => s.id !== snippetId));
+      addToast({
+        type: "success",
+        Icon: CheckCircle,
+        text: "Snippet deleted successfully.",
       });
+    } catch (error) {
+      addToast({
+        type: "error",
+        Icon: CircleX,
+        text: "Failed to delete snippet.",
+      });
+    }
   }
 
   return (
     <div className="w-full lg:flex-1 lg:w-auto p-[20px] lg:p-[40px]">
       {snippets.length === 0 ? (
         <div className="w-full h-full flex justify-center items-center">
-          <h3 className="opacity-[0.7]">No snippets here yet. Ready to create one?</h3>
+          <h3 className="opacity-[0.7]">
+            No snippets here yet. Ready to create one?
+          </h3>
         </div>
       ) : (
         <div>
@@ -161,7 +157,7 @@ export default function AllSnippets() {
         snippetTitle={deletingSnippet?.title}
       />
 
-            <AnimatePresence>
+      <AnimatePresence>
         {editingSnippet && (
           <motion.div
             key="backdrop"
@@ -175,12 +171,16 @@ export default function AllSnippets() {
             <SnippetEditing
               editingSnippet={editingSnippet}
               onClose={() => setEditingSnippet(null)}
-              onEdited={
-                (newSnippet)=>{
-                  setSnippets(prev => prev.map(s => s.id === newSnippet.id ? newSnippet : s));
-                  addToast({type: 'success', text: 'Snippet edited successfully!', Icon: CircleCheck})
-                }
-              }
+              onEdited={(newSnippet) => {
+                setSnippets((prev) =>
+                  prev.map((s) => (s.id === newSnippet.id ? newSnippet : s))
+                );
+                addToast({
+                  type: "success",
+                  text: "Snippet edited successfully!",
+                  Icon: CircleCheck,
+                });
+              }}
             />
           </motion.div>
         )}

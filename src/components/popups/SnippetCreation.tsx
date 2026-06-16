@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { X, Braces, Plus, Sparkles, Save } from "lucide-react";
+import { X, Braces, Plus, Sparkles, Save, CircleX } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import type snippet from "../../interfaces/snippet";
 import ScanOverlay from "../functionalElements/ScanOverlay";
-import { useNavigate } from "react-router-dom";
+import { apiFetch } from "../../utils/apiFetch";
+import { useToast } from "../hooks/useToast";
+import ToastContainer from "../functionalElements/ToastContainer";
 
 interface SnippetCreationProps {
   onClose: () => void;
@@ -33,7 +35,10 @@ const containerVariants = {
   },
 };
 
-export default function SnippetCreation({ onClose, onCreate }: SnippetCreationProps) {
+export default function SnippetCreation({
+  onClose,
+  onCreate,
+}: SnippetCreationProps) {
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
@@ -43,13 +48,9 @@ export default function SnippetCreation({ onClose, onCreate }: SnippetCreationPr
   const [language, setLanguage] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
-  const navigate = useNavigate();
 
-  const token = localStorage.getItem('token');
-  const user = JSON.parse(localStorage.getItem('user'));
-  if(!token){
-    navigate('/auth');
-  }
+  const user = JSON.parse(localStorage.getItem("user"));
+  const { addToast, removeToast, toasts } = useToast();
 
   const generateResponse = async (code: string) => {
     try {
@@ -57,18 +58,10 @@ export default function SnippetCreation({ onClose, onCreate }: SnippetCreationPr
       setIsLoading(true);
       setIsGenerated(false);
 
-      const aiResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/snippets/analyze`,
-        {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-           },
-          body: JSON.stringify({ code }),
-        }
-      );
-
+      const aiResponse = await apiFetch("/snippets/analyze", {
+        method: "POST",
+        body: JSON.stringify({ code }),
+      });
       const data = await aiResponse.json();
       const analysis: SnippetAnalysis = data;
 
@@ -81,6 +74,11 @@ export default function SnippetCreation({ onClose, onCreate }: SnippetCreationPr
     } catch (error) {
       console.error(error);
       setIsLoading(false);
+      addToast({
+        text: "Error creating snippet",
+        type: "error",
+        Icon: CircleX,
+      });
     }
   };
 
@@ -102,23 +100,29 @@ export default function SnippetCreation({ onClose, onCreate }: SnippetCreationPr
     }
   };
 
-  const handleSave = () => {
-    fetch(`${import.meta.env.VITE_API_URL}/snippets`, {
-      method: "POST",
-      headers: {
-        'Content-type': 'application/json',
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify({title, description, code, language, tags, user_id: user.user_id })
-    })
-    .then((res)=>{
-      return res.json();
-    })
-    .then((data)=>{
+  const handleSave = async () => {
+    try {
+      const res = await apiFetch("/snippets", {
+        method: "POST",
+        body: JSON.stringify({
+          title,
+          description,
+          code,
+          language,
+          tags,
+          user_id: user.user_id,
+        }),
+      });
+      const data = await res.json();
       onCreate(data.snippet);
       onClose();
-    })
-    
+    } catch (error) {
+      addToast({
+        text: "Error creating snippet",
+        type: "error",
+        Icon: CircleX,
+      });
+    }
   };
 
   return (
@@ -324,6 +328,7 @@ export default function SnippetCreation({ onClose, onCreate }: SnippetCreationPr
           </button>
         </div>
       </div>
+      <ToastContainer toasts={toasts} onDismiss={removeToast} />
     </motion.div>
   );
 }

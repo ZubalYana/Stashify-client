@@ -1,9 +1,11 @@
 import type snippet from "../../interfaces/snippet";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Plus, Save, Sparkles, AlertTriangle } from "lucide-react";
+import { X, Plus, Save, Sparkles, AlertTriangle, CircleX } from "lucide-react";
 import { useState, useEffect } from "react";
 import ScanOverlay from "../functionalElements/ScanOverlay";
-import { useNavigate } from "react-router-dom";
+import { apiFetch } from "../../utils/apiFetch";
+import { useToast } from "../hooks/useToast";
+import ToastContainer from "../functionalElements/ToastContainer";
 
 interface SnippetEditingProps {
   onClose: () => void;
@@ -42,12 +44,7 @@ export default function SnippetEditing({
   const [isReanalyzing, setIsReanalyzing] = useState(false);
   const [reanalyzeWarning, setReanalyzeWarning] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const navigate = useNavigate();
-
-  const token = localStorage.getItem('token');
-  if (!token){
-    navigate('/');
-  }
+  const {addToast, removeToast, toasts} = useToast();
 
   useEffect(() => {
     setCode(editingSnippet.code);
@@ -89,17 +86,10 @@ export default function SnippetEditing({
     setReanalyzeWarning(false);
 
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/snippets/analyze`,
-        {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-           },
-          body: JSON.stringify({ code }),
-        }
-      );
+      const res = await apiFetch("/snippets/analyze", {
+        method: "POST",
+        body: JSON.stringify({ code }),
+      });
       const data = await res.json();
       setTitle(data.title);
       setDescription(data.description);
@@ -107,30 +97,36 @@ export default function SnippetEditing({
       setTags(data.tags);
     } catch (err) {
       console.error(err);
+       addToast({
+        type: 'error',
+        text: 'Error reanalyzing your snippet',
+        Icon: CircleX
+      })
     } finally {
       setIsReanalyzing(false);
     }
   };
 
-  const editSnippet = () => {
-    setIsSaving(true);
-    fetch(`${import.meta.env.VITE_API_URL}/snippets/${editingSnippet.id}`, {
-      method: "PATCH",
-      headers: { 
-        "Content-type": "application/json",
-        "Authorization": `Bearer ${token}`
-       },
-      body: JSON.stringify({ title, description, code, language, tags }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        onEdited(data.snippet);
-        onClose();
-      })
-      .catch((err) => {
-        console.error(err);
-        setIsSaving(false);
+  const editSnippet = async () => {
+    try {
+      setIsSaving(true);
+      const res = await apiFetch(`/snippets/${editingSnippet.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ title, description, code, language, tags }),
       });
+      const data = await res.json();
+
+      onEdited(data.snippet);
+      onClose();
+    } catch (err) {
+      console.error(err);
+      setIsSaving(false);
+      addToast({
+        type: 'error',
+        text: 'Error editing your snippet',
+        Icon: CircleX
+      })
+    }
   };
 
   return (
@@ -164,14 +160,12 @@ export default function SnippetEditing({
           className="relative bg-[#0d0d0d] rounded-xl overflow-hidden border border-white/5 flex-shrink-0"
           style={{ width: "45%", minHeight: "220px" }}
         >
-          {isReanalyzing && (
-            <ScanOverlay/>
-          )}
+          {isReanalyzing && <ScanOverlay />}
           <textarea
             value={code}
             onChange={(e) => {
               setCode(e.target.value);
-              setReanalyzeWarning(false); 
+              setReanalyzeWarning(false);
             }}
             className="w-full h-full min-h-[220px] bg-transparent text-white/80 font-mono text-sm p-4 resize-none outline-none z-10 relative leading-relaxed"
             spellCheck={false}
@@ -223,9 +217,9 @@ export default function SnippetEditing({
             <label className="text-white/40 text-[11px] uppercase tracking-widest font-medium">
               Language ( Detected by AI )
             </label>
-            <p
-              className="w-full text-white text-sm outline-none transition-all duration-200"
-            >{language}</p>
+            <p className="w-full text-white text-sm outline-none transition-all duration-200">
+              {language}
+            </p>
           </motion.div>
 
           <motion.div
@@ -337,6 +331,8 @@ export default function SnippetEditing({
           </button>
         </div>
       </div>
+            <ToastContainer toasts={toasts} onDismiss={removeToast} />
+    
     </motion.div>
   );
 }
