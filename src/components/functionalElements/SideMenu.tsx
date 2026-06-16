@@ -33,6 +33,7 @@ interface CollapsibleSectionProps {
   items: NavItem[];
   addLabel: string;
   shouldReduceMotion: boolean | null;
+  disabled?: boolean;
 }
 
 function CollapsibleSection({
@@ -41,31 +42,44 @@ function CollapsibleSection({
   items,
   addLabel,
   shouldReduceMotion,
+  disabled,
 }: CollapsibleSectionProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div>
       <motion.button
+        disabled={disabled}
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between text-[14px] font-normal
+        className={`w-full flex items-center justify-between text-[14px] font-normal
                    text-[#B7ADA6] hover:text-white rounded-[12px] px-3 py-2
                    hover:bg-white/[0.04] active:bg-white/[0.06]
-                   transition-colors duration-150 cursor-pointer"
+                   transition-colors duration-150 cursor-pointer
+                   ${
+                     disabled
+                       ? "opacity-40 cursor-not-allowed pointer-events-none"
+                       : ""
+                   }`}
         whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
       >
         <div className="flex items-center gap-x-2">
           {icon}
           <span>{label}</span>
         </div>
-        <motion.span
-          variants={chevronVariants}
-          animate={isOpen ? "open" : "closed"}
-          transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-          className="text-[#B7ADA6]"
-        >
-          <ChevronRight strokeWidth={1} size={16} />
-        </motion.span>
+        {disabled ? (
+          <span className="text-[10px] font-medium text-[#F07020] bg-[#F07020]/10 border border-[#F07020]/20 rounded-md px-1.5 py-0.5">
+            Soon
+          </span>
+        ) : (
+          <motion.span
+            variants={chevronVariants}
+            animate={isOpen ? "open" : "closed"}
+            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+            className="text-[#B7ADA6]"
+          >
+            <ChevronRight strokeWidth={1} size={16} />
+          </motion.span>
+        )}
       </motion.button>
 
       <AnimatePresence initial={false}>
@@ -171,6 +185,7 @@ export default function SideMenu() {
               items={placeholderProjects}
               addLabel="Add new project"
               shouldReduceMotion={shouldReduceMotion}
+              disabled
             />
           </NavLink>
           <NavLink to="/collections">
@@ -180,6 +195,7 @@ export default function SideMenu() {
               items={placeholderCollections}
               addLabel="Add new collection"
               shouldReduceMotion={shouldReduceMotion}
+              disabled
             />
           </NavLink>
         </nav>
@@ -202,19 +218,18 @@ export default function SideMenu() {
         </div>
       </div>
       <div className="flex lg:hidden">
-          <motion.button
-    className="flex lg:hidden absolute top-[18px] right-[18px] z-30
+        <motion.button
+          className="flex lg:hidden absolute top-[18px] right-[18px] z-30
                p-[7px] rounded-[10px] text-[#B7ADA6]
                hover:text-white hover:bg-white/[0.06]
                transition-colors duration-150 cursor-pointer"
-    onClick={() => setMobileOpen(true)}
-    whileTap={shouldReduceMotion ? {} : { scale: 0.92 }}
-  >
-    <Menu size={20} strokeWidth={1.5} />
-  </motion.button>
- 
-  <MobileNav isOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
+          onClick={() => setMobileOpen(true)}
+          whileTap={shouldReduceMotion ? {} : { scale: 0.92 }}
+        >
+          <Menu size={20} strokeWidth={1.5} />
+        </motion.button>
 
+        <MobileNav isOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
       </div>
     </div>
   );
