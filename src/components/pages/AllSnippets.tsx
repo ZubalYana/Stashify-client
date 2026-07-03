@@ -28,11 +28,14 @@ export default function AllSnippets() {
     console.log("Actively searching for your code snippet...");
   };
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const userRaw = localStorage.getItem("user")
   const token = localStorage.getItem("token");
-  if (!token) {
+
+  if (!token || !userRaw) {
     navigate("/auth");
   }
+
+  const user = JSON.parse(userRaw)
 
   async function fetchSnippets() {
     const res = await apiFetch(`/snippets?user_id=${user.user_id}`, {
