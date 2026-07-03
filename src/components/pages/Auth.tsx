@@ -37,7 +37,7 @@ export default function Auth() {
         visible: { opacity: 1, height: "auto", marginBottom: 12 },
       };
 
-  const logIn = async (email, password) => {
+  const logIn = async (email: string, password: string) => {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
         method: "POST",
@@ -70,7 +70,7 @@ export default function Auth() {
     }
   };
 
-  const register = async (name, email, password) => {
+  const register = async (name: string, email: string, password: string) => {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
         method: "POST",

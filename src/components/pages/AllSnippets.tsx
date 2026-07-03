@@ -33,6 +33,7 @@ export default function AllSnippets() {
 
   if (!token || !userRaw) {
     navigate("/auth");
+    return;
   }
 
   const user = JSON.parse(userRaw)
@@ -49,7 +50,7 @@ export default function AllSnippets() {
     fetchSnippets();
   }, []);
 
-  async function deleteSnippet(snippetId) {
+  async function deleteSnippet(snippetId: string) {
     try {
       await apiFetch(`/snippets/${snippetId}`, { method: "DELETE" });
       setSnippets((prev) => prev.filter((s) => s.id !== snippetId));

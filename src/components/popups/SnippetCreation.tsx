@@ -6,10 +6,11 @@ import ScanOverlay from "../functionalElements/ScanOverlay";
 import { apiFetch } from "../../utils/apiFetch";
 import { useToast } from "../hooks/useToast";
 import ToastContainer from "../functionalElements/ToastContainer";
+import { useNavigate } from "react-router-dom";
 
 interface SnippetCreationProps {
   onClose: () => void;
-  onCreate: (snippet) => void;
+  onCreate: (snippet: snippet) => void;
 }
 
 interface SnippetAnalysis {
@@ -42,6 +43,7 @@ export default function SnippetCreation({
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
+  const navigate = useNavigate();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -49,7 +51,14 @@ export default function SnippetCreation({
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const userRaw = localStorage.getItem("user")
+
+  if (!userRaw) {
+    navigate('/auth')
+    return
+  }
+
+  const user = JSON.parse(userRaw)
   const { addToast, removeToast, toasts } = useToast();
 
   const generateResponse = async (code: string) => {
