@@ -1,7 +1,15 @@
-import { Mail, Hash } from "lucide-react";
+import { Mail, Hash, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function UserProfile() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/auth", { replace: true });
+  };
 
   return (
     <div className="flex-1 p-[20px] lg:p-[40px]">
@@ -32,6 +40,14 @@ export default function UserProfile() {
             </div>
           ))}
         </div>
+
+        <button
+          onClick={handleLogout}
+          className="mt-6 w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm text-white/50 hover:text-white border border-white/8 hover:border-white/15 rounded-xl transition-all duration-150 cursor-pointer"
+        >
+          <LogOut size={15} strokeWidth={1.5} />
+          Log out
+        </button>
       </div>
     </div>
   );

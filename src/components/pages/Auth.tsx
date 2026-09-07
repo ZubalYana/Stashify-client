@@ -24,8 +24,8 @@ export default function Auth() {
   const navigate = useNavigate();
   const { toasts, addToast, removeToast } = useToast();
 
-  const token = localStorage.getItem("token");
-  if (token) return <Navigate to="/" replace />;
+  // const token = localStorage.getItem("token");
+  // if (token) return <Navigate to="/" replace />;
 
   const fieldVariants = isMobile
     ? {

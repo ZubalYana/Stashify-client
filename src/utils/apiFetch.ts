@@ -15,6 +15,8 @@ export const apiFetch = async (
 
     if(!res.ok){
         if(res.status === 401){
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
             window.location.href = '/auth';
             throw new Error('Unauthorized');
         }
