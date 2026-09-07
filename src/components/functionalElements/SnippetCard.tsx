@@ -165,17 +165,20 @@ export default function SnippetCard({
           </div>
         )}
         {tags.length > 0 && (
-          <div className="flex flex-wrap gap-[6px] mt-1">
-            {tags.map((tag) => (
-              <span
-                key={tag}
-                className="text-[11px] font-medium text-[#F07020]/80
-                           px-2 py-[3px] rounded-[6px]
-                           bg-[#F07020]/[0.08] border border-[#F07020]/[0.12]"
-              >
-                {tag}
-              </span>
-            ))}
+          <div className="relative mt-1 overflow-hidden max-h-[calc(2*19px+6px)]">
+            <div className="flex flex-wrap gap-[6px]">
+              {tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center h-[19px] max-w-full
+                             text-[11px] leading-none font-medium text-[#F07020]/80
+                             px-2 rounded-[6px] truncate
+                             bg-[#F07020]/[0.08] border border-[#F07020]/[0.12]"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
         )}
       </div>

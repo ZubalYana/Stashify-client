@@ -232,9 +232,9 @@ export default function SideMenu() {
   }));
 
   return (
-    <div>
+    <div className="lg:h-full lg:shrink-0">
       <div
-        className="w-[240px] h-screen bg-[#171717] border-r border-[#B7ADA6]/10
+        className="w-[240px] h-full bg-[#171717] border-r border-[#B7ADA6]/10
                 hidden lg:flex flex-col lg:px-[18px] lg:py-[28px]"
       >
         <div className="px-1 mb-8">
@@ -302,7 +302,7 @@ export default function SideMenu() {
       </div>
       <div className="flex lg:hidden">
         <motion.button
-          className="flex lg:hidden absolute top-[18px] right-[18px] z-30
+          className="flex lg:hidden fixed top-[18px] right-[18px] z-30
                p-[7px] rounded-[10px] text-[#B7ADA6]
                hover:text-white hover:bg-white/[0.06]
                transition-colors duration-150 cursor-pointer"

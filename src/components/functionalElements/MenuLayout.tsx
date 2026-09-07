@@ -6,9 +6,11 @@ interface MenuLayoutProps{
 }
 export default function MenuLayout({children}: MenuLayoutProps){
     return(
-        <div className="w-full flex-1 flex">
+        <div className="w-full h-svh flex overflow-hidden">
             <SideMenu/>
-            {children}
+            <div className="flex-1 min-w-0 min-h-0 overflow-y-auto">
+                {children}
+            </div>
         </div>
     )
 }
