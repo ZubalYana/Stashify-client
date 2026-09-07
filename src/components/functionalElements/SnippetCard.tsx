@@ -65,8 +65,7 @@ export default function SnippetCard({
   const shouldReduceMotion = useReducedMotion();
   const [copied, setCopied] = useState(false);
 
-  function handleCopy(e: React.MouseEvent) {
-    e.stopPropagation();
+  function handleCopy() {
     navigator.clipboard.writeText(code);
     setCopied(true);
     setTimeout(() => setCopied(false), 1800);
