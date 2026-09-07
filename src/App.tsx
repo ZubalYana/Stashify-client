@@ -6,7 +6,9 @@ import Collections from "./components/pages/Collections";
 import Projects from "./components/pages/Projects";
 import Auth from "./components/pages/Auth";
 import ProtectedRoute from "./components/functionalElements/ProtectedRoute";
+import CollectionDetail from "./components/pages/CollectionDetail";
 import UserProfile from "./components/pages/UserProfile";
+import ProjectDetail from "./components/pages/ProjectDetail";
 
 function App() {
   return (
@@ -24,11 +26,31 @@ function App() {
           }
         />
         <Route
+          path="/collections/:id"
+          element={
+            <ProtectedRoute>
+              <MenuLayout>
+                <CollectionDetail />
+              </MenuLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/collections"
           element={
             <ProtectedRoute>
               <MenuLayout>
                 <Collections />
+              </MenuLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects/:id"
+          element={
+            <ProtectedRoute>
+              <MenuLayout>
+                <ProjectDetail />
               </MenuLayout>
             </ProtectedRoute>
           }

@@ -6,6 +6,9 @@ interface ConfirmDeletingProps {
   onConfirm: () => void;
   onCancel: () => void;
   snippetTitle?: string;
+  title?: string;
+  message?: string;
+  confirmLabel?: string;
 }
 
 export default function ConfirmDeleting({
@@ -13,6 +16,9 @@ export default function ConfirmDeleting({
   onConfirm,
   onCancel,
   snippetTitle,
+  title = "Delete snippet?",
+  message,
+  confirmLabel = "Delete",
 }: ConfirmDeletingProps) {
   return (
     <AnimatePresence>
@@ -47,17 +53,18 @@ export default function ConfirmDeleting({
             </div>
 
             <h3 className="text-white text-[17px] font-semibold tracking-tight mb-1">
-              Delete snippet?
+              {title}
             </h3>
             <p className="text-white/40 text-sm leading-relaxed">
-              {snippetTitle ? (
-                <>
-                  <span className="text-white/60">"{snippetTitle}"</span> will
-                  be permanently deleted. This can't be undone.
-                </>
-              ) : (
-                "This snippet will be permanently deleted. This can't be undone."
-              )}
+              {message ??
+                (snippetTitle ? (
+                  <>
+                    <span className="text-white/60">"{snippetTitle}"</span> will
+                    be permanently deleted. This can't be undone.
+                  </>
+                ) : (
+                  "This snippet will be permanently deleted. This can't be undone."
+                ))}
             </p>
 
             <div className="flex gap-2 mt-6">
@@ -71,7 +78,7 @@ export default function ConfirmDeleting({
                 onClick={onConfirm}
                 className="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-red-500/80 hover:bg-red-500 rounded-xl transition-all duration-150 cursor-pointer shadow-[0_0_16px_rgba(239,68,68,0.2)] hover:shadow-[0_0_22px_rgba(239,68,68,0.35)]"
               >
-                Delete
+                {confirmLabel}
               </button>
             </div>
           </motion.div>

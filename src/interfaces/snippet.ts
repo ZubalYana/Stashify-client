@@ -4,5 +4,7 @@ export default interface snippet{
     title: string,
     description: string,
     language: string,
-    tags: string[]
+    tags: string[],
+    project_id: number | null,
+    collections: { id: number, name: string }[]
 }

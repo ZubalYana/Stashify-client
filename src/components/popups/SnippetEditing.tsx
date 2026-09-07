@@ -1,4 +1,7 @@
 import type snippet from "../../interfaces/snippet";
+import type Project from "../../interfaces/project";
+import type Collection from "../../interfaces/collection";
+import CollectionPicker from "../functionalElements/CollectionPicker";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Plus, Save, Sparkles, AlertTriangle, CircleX } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -40,6 +43,14 @@ export default function SnippetEditing({
   const [language, setLanguage] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState<string>("");
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [projectId, setProjectId] = useState<number | null>(
+    editingSnippet.project_id ?? null
+  );
+  const [collections, setCollections] = useState<Collection[]>([]);
+  const [collectionIds, setCollectionIds] = useState<number[]>(
+    (editingSnippet.collections ?? []).map((c) => Number(c.id))
+  );
 
   const [isReanalyzing, setIsReanalyzing] = useState(false);
   const [reanalyzeWarning, setReanalyzeWarning] = useState(false);
@@ -52,6 +63,27 @@ export default function SnippetEditing({
     setDescription(editingSnippet.description);
     setLanguage(editingSnippet.language);
     setTags(editingSnippet.tags ?? []);
+    setProjectId(editingSnippet.project_id ?? null);
+    setCollectionIds((editingSnippet.collections ?? []).map((c) => Number(c.id)));
+  }, []);
+
+  useEffect(() => {
+    const raw = localStorage.getItem("user");
+    if (!raw) return;
+    const stored = JSON.parse(raw);
+    Promise.all([
+      apiFetch(`/projects?user_id=${stored.user_id}`, { method: "GET" }).then(
+        (res) => res.json()
+      ),
+      apiFetch(`/collections?user_id=${stored.user_id}`, { method: "GET" }).then(
+        (res) => res.json()
+      ),
+    ])
+      .then(([projectData, collectionData]) => {
+        setProjects(projectData.projects ?? []);
+        setCollections(collectionData.collections ?? []);
+      })
+      .catch(() => {});
   }, []);
 
   const handleAddTag = () => {
@@ -112,7 +144,15 @@ export default function SnippetEditing({
       setIsSaving(true);
       const res = await apiFetch(`/snippets/${editingSnippet.id}`, {
         method: "PATCH",
-        body: JSON.stringify({ title, description, code, language, tags }),
+        body: JSON.stringify({
+          title,
+          description,
+          code,
+          language,
+          tags,
+          project_id: projectId,
+          collection_ids: collectionIds,
+        }),
       });
       const data = await res.json();
 
@@ -139,6 +179,8 @@ export default function SnippetEditing({
         maxWidth: "980px",
         maxHeight: "90vh",
       }}
+      onClick={(e) => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
     >
       <div className="flex items-center justify-between p-6 lg:p-8 pb-4 flex-shrink-0">
         <div>
@@ -220,6 +262,41 @@ export default function SnippetEditing({
             <p className="w-full text-white text-sm outline-none transition-all duration-200">
               {language}
             </p>
+          </motion.div>
+
+          <motion.div
+            variants={fieldVariants}
+            className="flex flex-col gap-1.5"
+          >
+            <label className="text-white/40 text-[11px] uppercase tracking-widest font-medium">
+              Project
+            </label>
+            <select
+              value={projectId ?? ""}
+              onChange={(e) =>
+                setProjectId(e.target.value === "" ? null : Number(e.target.value))
+              }
+              onMouseDown={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full bg-[#0d0d0d] border border-white/8 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-[#F07020]/50 focus:shadow-[0_0_0_3px_rgba(240,112,32,0.08)] transition-all duration-200"
+            >
+              <option value="">No project</option>
+              {projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+            </select>
+          </motion.div>
+
+          <motion.div
+            variants={fieldVariants}
+            className="flex flex-col gap-1.5"
+          >
+            <label className="text-white/40 text-[11px] uppercase tracking-widest font-medium">
+              Collections
+            </label>
+            <CollectionPicker
+              collections={collections}
+              selectedIds={collectionIds}
+              onChange={setCollectionIds}
+            />
           </motion.div>
 
           <motion.div

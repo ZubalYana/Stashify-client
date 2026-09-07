@@ -20,7 +20,14 @@ export const apiFetch = async (
             window.location.href = '/auth';
             throw new Error('Unauthorized');
         }
-        throw new Error;
+        let message = "";
+        try {
+          const data = await res.json();
+          message = data?.message ?? "";
+        } catch {
+          // ignore
+        }
+        throw new Error(message);
     }
 
     return(res);

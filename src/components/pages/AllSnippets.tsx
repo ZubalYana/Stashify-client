@@ -13,6 +13,7 @@ import { CheckCircle, CircleCheck, CircleX } from "lucide-react";
 import SnippetEditing from "../popups/SnippetEditing";
 import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../../utils/apiFetch";
+import type Project from "../../interfaces/project";
 
 export default function AllSnippets() {
   const [creationMode, setCreationMode] = useState<boolean>(false);
@@ -21,6 +22,7 @@ export default function AllSnippets() {
   const [snippets, setSnippets] = useState<Array<snippet>>([]);
   const [selectedSnippet, setSelectedSnippet] = useState<snippet | null>(null);
   const [searchText, setSearchText] = useState<string>("");
+  const [projects, setProjects] = useState<Project[]>([]);
   const { toasts, addToast, removeToast } = useToast();
   const navigate = useNavigate();
 
@@ -61,6 +63,13 @@ export default function AllSnippets() {
 
     return () => clearTimeout(timeout);
   }, [searchText]);
+
+  useEffect(() => {
+    apiFetch(`/projects?user_id=${user.user_id}`, { method: "GET" })
+      .then((res) => res.json())
+      .then((data) => setProjects(data.projects ?? []))
+      .catch(() => {});
+  }, []);
 
   async function deleteSnippet(snippetId: string) {
     try {
@@ -118,6 +127,12 @@ export default function AllSnippets() {
                   onEdit={() => setEditingSnippet(snippet)}
                   onDelete={() => setDeletingSnippet(snippet)}
                   onCardClick={() => setSelectedSnippet(snippet)}
+                  projectName={
+                    snippet.project_id != null
+                      ? projects.find((p) => Number(p.id) === Number(snippet.project_id))?.name
+                      : undefined
+                  }
+                  collectionNames={(snippet.collections ?? []).map((c) => c.name)}
                 />
               ))}
             </div>
@@ -130,7 +145,9 @@ export default function AllSnippets() {
       {creationMode && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-          onClick={() => setCreationMode(false)}
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setCreationMode(false);
+          }}
         >
           <div onClick={(e) => e.stopPropagation()}>
             <SnippetCreation
@@ -190,7 +207,9 @@ export default function AllSnippets() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-            onClick={() => setEditingSnippet(null)}
+            onMouseDown={(e) => {
+              if (e.target === e.currentTarget) setEditingSnippet(null);
+            }}
           >
             <SnippetEditing
               editingSnippet={editingSnippet}

@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Braces, Plus, Sparkles, Save, CircleX } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import type snippet from "../../interfaces/snippet";
+import type Project from "../../interfaces/project";
+import type Collection from "../../interfaces/collection";
+import CollectionPicker from "../functionalElements/CollectionPicker";
 import ScanOverlay from "../functionalElements/ScanOverlay";
 import { apiFetch } from "../../utils/apiFetch";
 import { useToast } from "../hooks/useToast";
@@ -11,6 +14,8 @@ import { useNavigate } from "react-router-dom";
 interface SnippetCreationProps {
   onClose: () => void;
   onCreate: (snippet: snippet) => void;
+  defaultProjectId?: number | null;
+  defaultCollectionIds?: number[];
 }
 
 interface SnippetAnalysis {
@@ -39,6 +44,8 @@ const containerVariants = {
 export default function SnippetCreation({
   onClose,
   onCreate,
+  defaultProjectId = null,
+  defaultCollectionIds = [],
 }: SnippetCreationProps) {
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -50,16 +57,30 @@ export default function SnippetCreation({
   const [language, setLanguage] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
-
-  const userRaw = localStorage.getItem("user")
-
-  if (!userRaw) {
-    navigate('/auth')
-    return
-  }
-
-  const user = JSON.parse(userRaw)
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [projectId, setProjectId] = useState<number | null>(defaultProjectId);
+  const [collections, setCollections] = useState<Collection[]>([]);
+  const [collectionIds, setCollectionIds] = useState<number[]>(defaultCollectionIds);
   const { addToast, removeToast, toasts } = useToast();
+
+  useEffect(() => {
+    const raw = localStorage.getItem("user");
+    if (!raw) return;
+    const stored = JSON.parse(raw);
+    Promise.all([
+      apiFetch(`/projects?user_id=${stored.user_id}`, { method: "GET" }).then(
+        (res) => res.json()
+      ),
+      apiFetch(`/collections?user_id=${stored.user_id}`, { method: "GET" }).then(
+        (res) => res.json()
+      ),
+    ])
+      .then(([projectData, collectionData]) => {
+        setProjects(projectData.projects ?? []);
+        setCollections(collectionData.collections ?? []);
+      })
+      .catch(() => {});
+  }, []);
 
   const generateResponse = async (code: string) => {
     try {
@@ -91,6 +112,15 @@ export default function SnippetCreation({
     }
   };
 
+  const userRaw = localStorage.getItem("user")
+
+  if (!userRaw) {
+    navigate('/auth')
+    return
+  }
+
+  const user = JSON.parse(userRaw)
+
   const handleAddTag = () => {
     const trimmed = newTag.trim();
     if (!trimmed || tags.includes(trimmed)) return;
@@ -120,6 +150,8 @@ export default function SnippetCreation({
           language,
           tags,
           user_id: user.user_id,
+          ...(projectId != null ? { project_id: projectId } : {}),
+          ...(collectionIds.length > 0 ? { collection_ids: collectionIds } : {}),
         }),
       });
       const data = await res.json();
@@ -144,6 +176,8 @@ export default function SnippetCreation({
         maxWidth: isGenerated ? "980px" : "720px",
         maxHeight: "90vh",
       }}
+      onClick={(e) => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
     >
       <div className="flex items-center justify-between p-6 lg:p-8 pb-4 flex-shrink-0">
         <h2 className="text-white text-[22px] font-semibold tracking-tight">
@@ -231,6 +265,43 @@ export default function SnippetCreation({
                   onChange={(e) => setLanguage(e.target.value)}
                   className="w-full bg-[#0d0d0d] border border-white/8 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-[#F07020]/50 focus:shadow-[0_0_0_3px_rgba(240,112,32,0.08)] transition-all duration-200 placeholder:text-white/20"
                   placeholder="e.g. TypeScript"
+                />
+              </motion.div>
+              <motion.div
+                variants={fieldVariants}
+                className="flex flex-col gap-1.5"
+              >
+                <label className="text-white/40 text-[11px] uppercase tracking-widest font-medium">
+                  Project
+                </label>
+                <select
+                  value={projectId ?? ""}
+                  onChange={(e) =>
+                    setProjectId(e.target.value === "" ? null : Number(e.target.value))
+                  }
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={(e) => e.stopPropagation()}
+                  className="w-full bg-[#0d0d0d] border border-white/8 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-[#F07020]/50 focus:shadow-[0_0_0_3px_rgba(240,112,32,0.08)] transition-all duration-200"
+                >
+                  <option value="">No project</option>
+                  {projects.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name}
+                    </option>
+                  ))}
+                </select>
+              </motion.div>
+              <motion.div
+                variants={fieldVariants}
+                className="flex flex-col gap-1.5"
+              >
+                <label className="text-white/40 text-[11px] uppercase tracking-widest font-medium">
+                  Collections
+                </label>
+                <CollectionPicker
+                  collections={collections}
+                  selectedIds={collectionIds}
+                  onChange={setCollectionIds}
                 />
               </motion.div>
               <motion.div

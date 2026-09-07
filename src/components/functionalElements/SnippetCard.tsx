@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from "framer-motion";
-import { Copy, Pencil, Trash2, Check } from "lucide-react";
+import { Copy, Pencil, Trash2, Check, FolderMinus, BookmarkMinus } from "lucide-react";
 import { useState } from "react";
 import hljs from "highlight.js";
 import "highlight.js/styles/atom-one-dark.css";
@@ -12,7 +12,11 @@ export interface SnippetCardProps {
   tags?: string[];
   onEdit?: () => void;
   onDelete?: () => void;
+  onUnfile?: () => void;
+  onRemoveFromCollection?: () => void;
   onCardClick?: () => void;
+  projectName?: string;
+  collectionNames?: string[];
 }
 
 function previewLines(code: string, max = 8): string {
@@ -52,7 +56,11 @@ export default function SnippetCard({
   tags = [],
   onEdit,
   onDelete,
-  onCardClick
+  onUnfile,
+  onRemoveFromCollection,
+  onCardClick,
+  projectName,
+  collectionNames = [],
 }: SnippetCardProps) {
   const shouldReduceMotion = useReducedMotion();
   const [copied, setCopied] = useState(false);
@@ -103,6 +111,16 @@ export default function SnippetCard({
           <ActionButton label="Edit snippet" shouldReduceMotion={shouldReduceMotion} onClick={onEdit}>
             <Pencil size={14} strokeWidth={1.5} />
           </ActionButton>
+          {onUnfile && (
+            <ActionButton label="Remove from project" shouldReduceMotion={shouldReduceMotion} onClick={onUnfile}>
+              <FolderMinus size={14} strokeWidth={1.5} />
+            </ActionButton>
+          )}
+          {onRemoveFromCollection && (
+            <ActionButton label="Remove from collection" shouldReduceMotion={shouldReduceMotion} onClick={onRemoveFromCollection}>
+              <BookmarkMinus size={14} strokeWidth={1.5} />
+            </ActionButton>
+          )}
           <ActionButton label="Delete snippet" shouldReduceMotion={shouldReduceMotion} onClick={onDelete} danger>
             <Trash2 size={14} strokeWidth={1.5} />
           </ActionButton>
@@ -129,6 +147,23 @@ export default function SnippetCard({
           {description}
         </p>
 
+        {projectName && (
+          <p className="text-[11px] text-white/30 truncate">{projectName}</p>
+        )}
+        {collectionNames.length > 0 && (
+          <div className="flex flex-wrap gap-[6px]">
+            {collectionNames.map((name) => (
+              <span
+                key={name}
+                className="text-[10px] font-medium text-white/45
+                           px-2 py-[2px] rounded-[6px]
+                           bg-white/[0.04] border border-white/[0.08]"
+              >
+                {name}
+              </span>
+            ))}
+          </div>
+        )}
         {tags.length > 0 && (
           <div className="flex flex-wrap gap-[6px] mt-1">
             {tags.map((tag) => (

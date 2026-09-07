@@ -152,6 +152,26 @@ export default function SnippetFullView({
               </div>
             </div>
           )}
+
+          {(snippet.collections ?? []).length > 0 && (
+            <div className="flex flex-col gap-2">
+              <p className="text-[10px] text-white/25 uppercase tracking-widest font-medium">
+                Collections
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {snippet.collections.map((c) => (
+                  <span
+                    key={c.id}
+                    className="flex items-center px-2.5 py-1
+                               bg-white/[0.04] border border-white/[0.08]
+                               rounded-full text-white/50 text-xs font-medium"
+                  >
+                    {c.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </motion.div>
