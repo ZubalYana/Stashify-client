@@ -1,4 +1,8 @@
 const styles = {
+  xs: {
+    img: 'w-[22px] h-[22px]',
+    text: 'text-[16px]',
+  },
   sm: {
     img: 'w-[30px] h-[30px]',
     text: 'text-[22px]', 
@@ -10,7 +14,7 @@ const styles = {
 }
 
 interface WordMarkLogoProps {
-  size: 'sm' | 'md'
+  size: 'xs' | 'sm' | 'md'
 }
 
 export default function WordMarkLogo({ size }: WordMarkLogoProps) {

@@ -100,7 +100,7 @@ export default function CollectionForm({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.92, y: 12 }}
             transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[min(90vw,440px)] bg-[#121212] border border-white/10 rounded-2xl p-6 shadow-2xl"
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[min(calc(100vw-1.5rem),440px)] max-h-[min(90dvh,640px)] overflow-y-auto bg-[#121212] border border-white/10 rounded-2xl p-5 sm:p-6 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button

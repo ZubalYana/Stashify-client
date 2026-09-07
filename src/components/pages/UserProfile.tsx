@@ -12,7 +12,7 @@ export default function UserProfile() {
   };
 
   return (
-    <div className="flex-1 p-[20px] lg:p-[40px]">
+    <div className="w-full min-w-0 p-4 sm:p-5 lg:p-10 pb-24">
       <h3 className="text-[20px] font-semibold text-white mb-6">User Profile</h3>
 
       <div className="bg-[#121212] border border-white/10 rounded-2xl p-6 max-w-md">
@@ -22,8 +22,8 @@ export default function UserProfile() {
               {user.userName?.charAt(0).toUpperCase() ?? "?"}
             </span>
           </div>
-          <div>
-            <p className="text-white font-semibold text-[16px]">{user.userName}</p>
+          <div className="min-w-0">
+            <p className="text-white font-semibold text-[16px] truncate">{user.userName}</p>
             <p className="text-white/40 text-[13px]">Personal account</p>
           </div>
         </div>

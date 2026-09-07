@@ -233,6 +233,26 @@ export default function SideMenu() {
 
   return (
     <div className="lg:h-full lg:shrink-0">
+      <header
+        className="flex lg:hidden fixed top-0 left-0 right-0 z-30
+                   min-h-14 items-center justify-between
+                   px-4 pt-[env(safe-area-inset-top)]
+                   bg-[#171717]/92 backdrop-blur-md
+                   border-b border-white/[0.06]"
+      >
+        <WordMarkLogo size="xs" />
+        <motion.button
+          aria-label="Open navigation"
+          className="p-[7px] rounded-[10px] text-[#B7ADA6]
+                     hover:text-white hover:bg-white/[0.06]
+                     transition-colors duration-150 cursor-pointer"
+          onClick={() => setMobileOpen(true)}
+          whileTap={shouldReduceMotion ? {} : { scale: 0.92 }}
+        >
+          <Menu size={20} strokeWidth={1.5} />
+        </motion.button>
+      </header>
+
       <div
         className="w-[240px] h-full bg-[#171717] border-r border-[#B7ADA6]/10
                 hidden lg:flex flex-col lg:px-[18px] lg:py-[28px]"
@@ -301,18 +321,20 @@ export default function SideMenu() {
         </div>
       </div>
       <div className="flex lg:hidden">
-        <motion.button
-          className="flex lg:hidden fixed top-[18px] right-[18px] z-30
-               p-[7px] rounded-[10px] text-[#B7ADA6]
-               hover:text-white hover:bg-white/[0.06]
-               transition-colors duration-150 cursor-pointer"
-          onClick={() => setMobileOpen(true)}
-          whileTap={shouldReduceMotion ? {} : { scale: 0.92 }}
-        >
-          <Menu size={20} strokeWidth={1.5} />
-        </motion.button>
-
-        <MobileNav isOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
+        <MobileNav
+          isOpen={mobileOpen}
+          onClose={() => setMobileOpen(false)}
+          projectItems={projectItems}
+          collectionItems={collectionItems}
+          onAddProject={() => {
+            setMobileOpen(false);
+            setCreatingProject(true);
+          }}
+          onAddCollection={() => {
+            setMobileOpen(false);
+            setCreatingCollection(true);
+          }}
+        />
       </div>
       <ProjectForm
         isOpen={creatingProject}

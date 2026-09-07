@@ -17,7 +17,7 @@ export default function SnippetsSearchbar({ value, onChange, onSearch }: Snippet
   return (
     <div className={`
       flex items-center gap-x-2 mt-4
-      w-full max-w-[480px]
+      w-full max-w-full sm:max-w-[480px]
       bg-[#0d0d0d] rounded-xl border px-4 py-2.5
       transition-all duration-300
       ${focused

@@ -112,10 +112,10 @@ export default function Auth() {
   };
 
   return (
-    <div className="w-full h-screen flex justify-center items-center bg-[#0a0a0a] overflow-hidden relative">
+    <div className="w-full h-svh flex justify-center items-center bg-[#0a0a0a] overflow-y-auto relative px-4 py-8">
       <AnimatedBackground />
       <div className="absolute w-[500px] h-[500px] rounded-full bg-[#F07020]/5 blur-[100px] pointer-events-none" />
-      <div className="relative z-10 w-full max-w-[420px] mx-4 bg-[#141414] rounded-2xl p-8 border border-white/5 shadow-[0_0_60px_rgba(0,0,0,0.5)]">
+      <div className="relative z-10 w-full max-w-[420px] my-auto bg-[#141414] rounded-2xl p-6 sm:p-8 border border-white/5 shadow-[0_0_60px_rgba(0,0,0,0.5)]">
         <div className="flex justify-center mb-6">
           <WordMarkLogo size="sm" />
         </div>

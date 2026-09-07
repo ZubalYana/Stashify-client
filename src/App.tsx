@@ -12,7 +12,7 @@ import ProjectDetail from "./components/pages/ProjectDetail";
 
 function App() {
   return (
-    <div className="w-full">
+    <div className="w-full h-full min-h-0">
       <Routes>
         <Route path="/auth" element={<Auth />} />
         <Route

@@ -13,7 +13,9 @@ export default function NewSnippet({ onAddNewSnippet }: NewSnippetProps) {
         w-[50px] h-[50px]
         bg-[#F07020] rounded-full cursor-pointer
         flex items-center justify-center
-        fixed right-[20px] bottom-[20px] lg:right-[40px] lg:bottom-[40px]
+        fixed right-[max(16px,env(safe-area-inset-right))]
+        bottom-[max(16px,env(safe-area-inset-bottom))]
+        lg:right-[40px] lg:bottom-[40px]
         shadow-[0_0_0_0_rgba(240,112,32,0.5)]
         hover:scale-110 hover:bg-[#FF8533]
         hover:shadow-[0_0_0_8px_rgba(240,112,32,0.15)]

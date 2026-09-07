@@ -7,11 +7,22 @@ import {
   Library,
   User,
   Settings,
+  Plus,
 } from "lucide-react";
+
+interface MobileNavItem {
+  title: string;
+  to?: string;
+  icon: React.ReactNode;
+}
 
 interface MobileNavProps {
   isOpen: boolean;
   onClose: () => void;
+  projectItems?: MobileNavItem[];
+  collectionItems?: MobileNavItem[];
+  onAddProject?: () => void;
+  onAddCollection?: () => void;
 }
 
 const navItems = [
@@ -30,7 +41,63 @@ const listVariants = {
   visible: { transition: { staggerChildren: 0.06, delayChildren: 0.1 } },
 };
 
-export default function MobileNav({ isOpen, onClose }: MobileNavProps) {
+function SubLinks({
+  items,
+  addLabel,
+  onAdd,
+  onClose,
+}: {
+  items: MobileNavItem[];
+  addLabel: string;
+  onAdd?: () => void;
+  onClose: () => void;
+}) {
+  if (items.length === 0 && !onAdd) return null;
+
+  return (
+    <div className="flex flex-col gap-y-[2px] pl-3 ml-3 border-l border-[#F07020]/40 mb-2">
+      {items.map((item) =>
+        item.to ? (
+          <NavLink key={item.to} to={item.to} onClick={onClose}>
+            {({ isActive }) => (
+              <div
+                className={`flex items-center gap-x-2 text-[13px] rounded-[10px] px-2 py-[7px]
+                            ${isActive
+                              ? "text-white bg-white/[0.06]"
+                              : "text-[#B7ADA6] hover:text-white hover:bg-white/[0.04]"
+                            }`}
+              >
+                <span className="flex-shrink-0 opacity-70">{item.icon}</span>
+                <span className="truncate">{item.title}</span>
+              </div>
+            )}
+          </NavLink>
+        ) : null
+      )}
+      {onAdd && (
+        <button
+          type="button"
+          onClick={onAdd}
+          className="flex items-center gap-x-[6px] text-[12px] font-medium
+                     text-[#F07020]/70 hover:text-[#F07020] px-2 py-[6px]
+                     transition-colors duration-150 cursor-pointer"
+        >
+          <Plus size={13} strokeWidth={2} />
+          {addLabel}
+        </button>
+      )}
+    </div>
+  );
+}
+
+export default function MobileNav({
+  isOpen,
+  onClose,
+  projectItems = [],
+  collectionItems = [],
+  onAddProject,
+  onAddCollection,
+}: MobileNavProps) {
   const shouldReduceMotion = useReducedMotion();
 
   return (
@@ -47,9 +114,10 @@ export default function MobileNav({ isOpen, onClose }: MobileNavProps) {
           />
 
           <motion.div
-            className="fixed top-0 left-0 z-50 h-full w-[280px]
+            className="fixed top-0 left-0 z-50 h-full w-[min(280px,86vw)]
                        bg-[#171717] border-r border-[#B7ADA6]/10
-                       flex flex-col px-[20px] py-[20px] lg:hidden"
+                       flex flex-col px-[20px] py-[20px] pt-[max(20px,env(safe-area-inset-top))]
+                       lg:hidden"
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
@@ -75,7 +143,7 @@ export default function MobileNav({ isOpen, onClose }: MobileNavProps) {
             </div>
 
             <motion.nav
-              className="flex flex-col gap-y-[4px] flex-1"
+              className="flex flex-col gap-y-[4px] flex-1 min-h-0 overflow-y-auto nav-scroll"
               variants={shouldReduceMotion ? {} : listVariants}
               initial="hidden"
               animate="visible"
@@ -105,11 +173,27 @@ export default function MobileNav({ isOpen, onClose }: MobileNavProps) {
                       </motion.div>
                     )}
                   </NavLink>
+                  {to === "/projects" && (
+                    <SubLinks
+                      items={projectItems}
+                      addLabel="Add new project"
+                      onAdd={onAddProject}
+                      onClose={onClose}
+                    />
+                  )}
+                  {to === "/collections" && (
+                    <SubLinks
+                      items={collectionItems}
+                      addLabel="Add new collection"
+                      onAdd={onAddCollection}
+                      onClose={onClose}
+                    />
+                  )}
                 </motion.div>
               ))}
             </motion.nav>
 
-            <div className="flex flex-col gap-y-[4px] pt-4 border-t border-white/[0.05]">
+            <div className="flex flex-col gap-y-[4px] pt-4 border-t border-white/[0.05] pb-[env(safe-area-inset-bottom)]">
               {bottomItems.map(({ label, icon, to }) => (
                 <NavLink key={to} to={to} onClick={onClose}>
                   {({ isActive }) => (

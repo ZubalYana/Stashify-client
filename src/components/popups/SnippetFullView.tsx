@@ -34,14 +34,14 @@ export default function SnippetFullView({
       exit={{ opacity: 0, scale: 0.96, y: 16 }}
       transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
       onClick={(e) => e.stopPropagation()}
-      className="w-[92vw] max-w-[880px] bg-[#121212] rounded-2xl border border-white/10
-                 flex flex-col md:flex-row overflow-hidden shadow-2xl shadow-black/60"
-      style={{ maxHeight: "82vh" }}
+      className="w-full max-w-[880px] my-auto bg-[#121212] rounded-2xl border border-white/10
+                 flex flex-col md:flex-row overflow-hidden shadow-2xl shadow-black/60
+                 max-h-[min(90dvh,880px)]"
     >
       <div
         className="relative flex flex-col bg-[#0d0d0d]
                    border-b md:border-b-0 md:border-r border-white/8
-                   md:w-[55%] w-full flex-shrink-0"
+                   md:w-[55%] w-full shrink-0 md:min-h-0 max-h-[38vh] md:max-h-none"
       >
         <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 flex-shrink-0">
           <span className="text-[10px] text-white/20 uppercase tracking-widest font-medium font-mono">
@@ -76,10 +76,7 @@ export default function SnippetFullView({
           </button>
         </div>
 
-        <div
-          className="flex-1 overflow-auto min-h-0"
-          style={{ maxHeight: "72vh" }}
-        >
+        <div className="flex-1 overflow-auto min-h-0">
           <pre
             className="text-[12.5px] text-zinc-300 font-mono leading-[1.8]
                        whitespace-pre p-5"
@@ -89,7 +86,7 @@ export default function SnippetFullView({
       </div>
 
       <div className="flex flex-col overflow-y-auto flex-1 min-w-0">
-        <div className="flex items-center justify-between px-6 pt-5 pb-4 flex-shrink-0">
+        <div className="flex items-center justify-between px-4 sm:px-6 pt-5 pb-4 flex-shrink-0">
           <span className="text-[10px] text-white/20 uppercase tracking-widest font-medium">
             Snippet details
           </span>
@@ -101,7 +98,7 @@ export default function SnippetFullView({
           </button>
         </div>
 
-        <div className="flex flex-col gap-6 px-6 pb-7">
+        <div className="flex flex-col gap-6 px-4 sm:px-6 pb-7">
           <div className="flex flex-col gap-1.5">
             <p className="text-[10px] text-white/25 uppercase tracking-widest font-medium">
               Title

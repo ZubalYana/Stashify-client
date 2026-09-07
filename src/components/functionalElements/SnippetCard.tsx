@@ -91,11 +91,11 @@ export default function SnippetCard({
       >
         <div
           className="absolute top-3 right-3 flex items-center gap-x-1 z-20
-                      opacity-0 group-hover:opacity-100 transition-opacity duration-200
+                      opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-200
                       bg-[#141414]/80 backdrop-blur-sm rounded-[10px] p-0.5"
           onClick={(e) => e.stopPropagation()}
         >
-          <ActionButton label="Copy code" shouldReduceMotion={shouldReduceMotion} onClick={()=>handleCopy}>
+          <ActionButton label="Copy code" shouldReduceMotion={shouldReduceMotion} onClick={handleCopy}>
             <motion.span
               key={copied ? "check" : "copy"}
               initial={{ scale: 0.7, opacity: 0 }}

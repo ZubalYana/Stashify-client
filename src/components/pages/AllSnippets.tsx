@@ -92,16 +92,16 @@ export default function AllSnippets() {
   const hasQuery = searchText.trim().length > 0;
 
   return (
-    <div className="w-full lg:flex-1 lg:w-auto p-[20px] lg:p-[40px]">
+    <div className="w-full min-w-0 p-4 sm:p-5 lg:p-10 pb-24">
       {snippets.length === 0 && !hasQuery ? (
-        <div className="w-full h-full flex justify-center items-center">
-          <h3 className="opacity-[0.7]">
+        <div className="w-full min-h-[60vh] flex justify-center items-center">
+          <h3 className="opacity-[0.7] text-center text-pretty px-6 max-w-md">
             No snippets here yet. Ready to create one?
           </h3>
         </div>
       ) : (
         <div>
-          <h3 className="text-[24px] lg:text-[20px] font-semibold">
+          <h3 className="text-[22px] sm:text-[24px] lg:text-[20px] font-semibold pr-2">
             All snippets
           </h3>
           <SnippetsSearchbar
@@ -112,10 +112,10 @@ export default function AllSnippets() {
 
           {snippets.length === 0 ? (
             <div className="w-full flex justify-center items-center mt-16">
-              <h3 className="opacity-[0.7]">No snippets match your search.</h3>
+              <h3 className="opacity-[0.7] text-center text-pretty px-6">No snippets match your search.</h3>
             </div>
           ) : (
-            <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+            <div className="w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6 mt-4">
               {snippets.map((snippet) => (
                 <SnippetCard
                   key={snippet.id}
@@ -144,7 +144,7 @@ export default function AllSnippets() {
 
       {creationMode && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-3 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm"
           onMouseDown={(e) => {
             if (e.target === e.currentTarget) setCreationMode(false);
           }}
@@ -174,7 +174,7 @@ export default function AllSnippets() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-3 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm"
             onClick={() => setSelectedSnippet(null)}
           >
             <SnippetFullView
@@ -206,7 +206,7 @@ export default function AllSnippets() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-3 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm"
             onMouseDown={(e) => {
               if (e.target === e.currentTarget) setEditingSnippet(null);
             }}

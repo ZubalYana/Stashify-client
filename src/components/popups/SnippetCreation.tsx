@@ -170,17 +170,16 @@ export default function SnippetCreation({
     <motion.div
       layout
       transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-      className="bg-[#121212] rounded-2xl border border-white/10 flex flex-col"
+      className="bg-[#121212] rounded-2xl border border-white/10 flex flex-col my-auto w-full"
       style={{
-        width: "min(90vw, 980px)",
         maxWidth: isGenerated ? "980px" : "720px",
-        maxHeight: "90vh",
+        maxHeight: "min(90dvh, 900px)",
       }}
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
     >
-      <div className="flex items-center justify-between p-6 lg:p-8 pb-4 flex-shrink-0">
-        <h2 className="text-white text-[22px] font-semibold tracking-tight">
+      <div className="flex items-center justify-between p-4 sm:p-6 lg:p-8 pb-4 flex-shrink-0">
+        <h2 className="text-white text-[20px] sm:text-[22px] font-semibold tracking-tight">
           New snippet
         </h2>
         <button
@@ -191,10 +190,12 @@ export default function SnippetCreation({
         </button>
       </div>
 
-      <div className="flex gap-5 items-stretch px-6 lg:px-8 flex-1 min-h-0">
+      <div className="flex flex-col lg:flex-row gap-4 sm:gap-5 items-stretch px-4 sm:px-6 lg:px-8 flex-1 min-h-0 overflow-y-auto lg:overflow-hidden">
         <div
-          className="relative bg-[#0d0d0d] rounded-xl overflow-hidden border border-white/5 flex-shrink-0 transition-all duration-400"
-          style={{ width: isGenerated ? "45%" : "100%", minHeight: "220px" }}
+          className={`relative bg-[#0d0d0d] rounded-xl overflow-hidden border border-white/5 w-full transition-all duration-400 ${
+            isGenerated ? "lg:w-[45%] lg:flex-shrink-0" : ""
+          }`}
+          style={{ minHeight: "180px" }}
         >
           {!code && !isLoading && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 pointer-events-none select-none">
@@ -208,7 +209,7 @@ export default function SnippetCreation({
           <textarea
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            className="w-full h-full min-h-[220px] bg-transparent text-white/80 font-mono text-sm p-4 resize-none outline-none z-10 relative leading-relaxed"
+            className="w-full h-full min-h-[180px] lg:min-h-[220px] bg-transparent text-white/80 font-mono text-sm p-4 resize-none outline-none z-10 relative leading-relaxed"
             spellCheck={false}
           />
 
@@ -354,14 +355,14 @@ export default function SnippetCreation({
         </AnimatePresence>
       </div>
 
-      <div className="flex items-center justify-between px-6 lg:px-8 py-4 flex-shrink-0 mt-2">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between px-4 sm:px-6 lg:px-8 py-4 flex-shrink-0 mt-2 border-t border-white/5">
         <p
           className={`text-xs transition-all duration-300 ${
             isLoading
               ? "text-white/35"
               : isGenerated
               ? "text-[#F07020]/70"
-              : "opacity-0"
+              : "hidden sm:block sm:opacity-0"
           }`}
         >
           {isLoading
@@ -370,7 +371,7 @@ export default function SnippetCreation({
             ? "Summary ready — edit before saving"
             : ""}
         </p>
-        <div className="flex gap-2 ml-auto">
+        <div className="flex flex-wrap gap-2 sm:ml-auto justify-end">
           {isGenerated && (
             <motion.button
               initial={{ opacity: 0, x: 8 }}

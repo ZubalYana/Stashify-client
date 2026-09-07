@@ -54,12 +54,12 @@ export default function Collections() {
   }
 
   return (
-    <div className="w-full lg:flex-1 lg:w-auto p-[20px] lg:p-[40px]">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-[24px] lg:text-[20px] font-semibold">Collections</h3>
+    <div className="w-full min-w-0 p-4 sm:p-5 lg:p-10 pb-24">
+      <div className="flex items-center justify-between gap-3 mb-6">
+        <h3 className="text-[22px] sm:text-[24px] lg:text-[20px] font-semibold min-w-0 truncate">Collections</h3>
         <button
           onClick={() => setCreating(true)}
-          className="flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium text-white bg-[#F07020] hover:bg-[#d96418] rounded-xl transition-all duration-150 cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-2 sm:px-3.5 text-sm font-medium text-white bg-[#F07020] hover:bg-[#d96418] rounded-xl transition-all duration-150 cursor-pointer shrink-0"
         >
           <Plus size={15} strokeWidth={2.5} />
           New collection
@@ -68,12 +68,12 @@ export default function Collections() {
 
       {collections.length === 0 ? (
         <div className="w-full h-[60vh] flex justify-center items-center">
-          <h3 className="opacity-[0.7]">
+          <h3 className="opacity-[0.7] text-center text-pretty px-6 max-w-md">
             No collections yet. Group snippets by topic — Auth, Tailwind, hooks.
           </h3>
         </div>
       ) : (
-        <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
           {collections.map((collection) => (
             <motion.div
               key={collection.id}
@@ -91,7 +91,7 @@ export default function Collections() {
                   <Library size={18} className="text-[#F07020]" />
                 </div>
                 <div
-                  className="flex items-center gap-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  className="flex items-center gap-x-1 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-200"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <button
