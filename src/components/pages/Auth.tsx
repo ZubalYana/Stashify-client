@@ -5,7 +5,7 @@ import PasswordInput from "../functionalElements/PasswordInput";
 import PrimaryButton from "../buttons/PrimaryButton";
 import WordMarkLogo from "../WordmarkLogo";
 import AnimatedBackground from "../AnimatedBackground";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useToast } from "../hooks/useToast";
 import { CircleX } from "lucide-react";
 import ToastContainer from "../functionalElements/ToastContainer";

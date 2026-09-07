@@ -24,10 +24,6 @@ export default function AllSnippets() {
   const { toasts, addToast, removeToast } = useToast();
   const navigate = useNavigate();
 
-  const searchForSnippet = () => {
-    console.log("Actively searching for your code snippet...");
-  };
-
   const userRaw = localStorage.getItem("user")
   const token = localStorage.getItem("token");
 
@@ -39,16 +35,32 @@ export default function AllSnippets() {
   const user = JSON.parse(userRaw)
 
   async function fetchSnippets() {
-    const res = await apiFetch(`/snippets?user_id=${user.user_id}`, {
-      method: "GET",
-    });
-    const data = await res.json();
-    setSnippets(data.snippets);
+    try {
+      const q = searchText.trim();
+      const url = q
+        ? `/snippets?user_id=${user.user_id}&q=${encodeURIComponent(q)}`
+        : `/snippets?user_id=${user.user_id}`;
+      const res = await apiFetch(url, {
+        method: "GET",
+      });
+      const data = await res.json();
+      setSnippets(data.snippets);
+    } catch {
+      addToast({
+        type: "error",
+        Icon: CircleX,
+        text: "Failed to load snippets.",
+      });
+    }
   }
 
   useEffect(() => {
-    fetchSnippets();
-  }, []);
+    const timeout = setTimeout(() => {
+      fetchSnippets();
+    }, searchText.trim() ? 300 : 0);
+
+    return () => clearTimeout(timeout);
+  }, [searchText]);
 
   async function deleteSnippet(snippetId: string) {
     try {
@@ -68,9 +80,11 @@ export default function AllSnippets() {
     }
   }
 
+  const hasQuery = searchText.trim().length > 0;
+
   return (
     <div className="w-full lg:flex-1 lg:w-auto p-[20px] lg:p-[40px]">
-      {snippets.length === 0 ? (
+      {snippets.length === 0 && !hasQuery ? (
         <div className="w-full h-full flex justify-center items-center">
           <h3 className="opacity-[0.7]">
             No snippets here yet. Ready to create one?
@@ -84,24 +98,30 @@ export default function AllSnippets() {
           <SnippetsSearchbar
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            onSearch={() => searchForSnippet()}
+            onSearch={() => fetchSnippets()}
           />
 
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-            {snippets.map((snippet) => (
-              <SnippetCard
-                key={snippet.id}
-                title={snippet.title}
-                description={snippet.description}
-                language={snippet.language}
-                code={snippet.code}
-                tags={snippet.tags}
-                onEdit={() => setEditingSnippet(snippet)}
-                onDelete={() => setDeletingSnippet(snippet)}
-                onCardClick={() => setSelectedSnippet(snippet)}
-              />
-            ))}
-          </div>
+          {snippets.length === 0 ? (
+            <div className="w-full flex justify-center items-center mt-16">
+              <h3 className="opacity-[0.7]">No snippets match your search.</h3>
+            </div>
+          ) : (
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+              {snippets.map((snippet) => (
+                <SnippetCard
+                  key={snippet.id}
+                  title={snippet.title}
+                  description={snippet.description}
+                  language={snippet.language}
+                  code={snippet.code}
+                  tags={snippet.tags}
+                  onEdit={() => setEditingSnippet(snippet)}
+                  onDelete={() => setDeletingSnippet(snippet)}
+                  onCardClick={() => setSelectedSnippet(snippet)}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
 
