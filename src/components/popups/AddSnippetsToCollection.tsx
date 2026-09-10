@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Library } from "lucide-react";
 import { apiFetch } from "../../utils/apiFetch";
+import { getStoredUser } from "../../utils/session";
 import type snippet from "../../interfaces/snippet";
 import type Collection from "../../interfaces/collection";
 
@@ -23,8 +24,7 @@ export default function AddSnippetsToCollection({
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const userRaw = localStorage.getItem("user");
-  const user = userRaw ? JSON.parse(userRaw) : null;
+  const user = getStoredUser();
 
   useEffect(() => {
     if (!isOpen || !user) return;

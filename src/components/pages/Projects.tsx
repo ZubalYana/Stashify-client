@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Folder, Pencil, Trash2, Plus, FileCode } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { apiFetch } from "../../utils/apiFetch";
+import { getSession } from "../../utils/session";
 import type Project from "../../interfaces/project";
 import ProjectForm from "../popups/ProjectForm";
 import ConfirmDeleting from "../popups/ConfirmDeleting";
@@ -15,15 +16,12 @@ export default function Projects() {
   const navigate = useNavigate();
   const shouldReduceMotion = useReducedMotion();
 
-  const userRaw = localStorage.getItem("user");
-  const token = localStorage.getItem("token");
-
-  if (!token || !userRaw) {
+  const session = getSession();
+  if (!session) {
     navigate("/auth");
     return;
   }
-
-  const user = JSON.parse(userRaw);
+  const { user } = session;
 
   async function fetchProjects() {
     try {

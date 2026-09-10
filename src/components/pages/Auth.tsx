@@ -5,11 +5,12 @@ import PasswordInput from "../functionalElements/PasswordInput";
 import PrimaryButton from "../buttons/PrimaryButton";
 import WordMarkLogo from "../WordmarkLogo";
 import AnimatedBackground from "../AnimatedBackground";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { useToast } from "../hooks/useToast";
 import { CircleX } from "lucide-react";
 import ToastContainer from "../functionalElements/ToastContainer";
 import { ApiError, messageForError } from "../../utils/apiFetch";
+import { getSession, setSession } from "../../utils/session";
 
 function useIsMobile() {
   return typeof window != "undefined" && window.innerWidth < 768;
@@ -26,8 +27,9 @@ export default function Auth() {
   const navigate = useNavigate();
   const { toasts, addToast, removeToast } = useToast();
 
-  // const token = localStorage.getItem("token");
-  // if (token) return <Navigate to="/" replace />;
+  if (getSession()) {
+    return <Navigate to="/" replace />;
+  }
 
   const fieldVariants = isMobile
     ? {
@@ -61,15 +63,11 @@ export default function Auth() {
         throw new ApiError(message, res.status);
       }
       const data = await res.json();
-      localStorage.setItem("token", data.token);
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          user_id: data.user.id,
-          userEmail: data.user.email,
-          userName: data.user.name,
-        })
-      );
+      setSession(data.token, {
+        user_id: data.user.id,
+        userEmail: data.user.email,
+        userName: data.user.name,
+      });
       navigate("/");
     } catch (error) {
       addToast({
@@ -104,15 +102,11 @@ export default function Auth() {
         throw new ApiError(message, res.status);
       }
       const data = await res.json();
-      localStorage.setItem("token", data.token);
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          user_id: data.user.id,
-          userEmail: data.user.email,
-          userName: data.user.name,
-        })
-      );
+      setSession(data.token, {
+        user_id: data.user.id,
+        userEmail: data.user.email,
+        userName: data.user.name,
+      });
       navigate("/");
     } catch (error) {
       addToast({

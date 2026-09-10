@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Folder } from "lucide-react";
 import { apiFetch, waitIfRateLimited } from "../../utils/apiFetch";
+import { getStoredUser } from "../../utils/session";
 import type Project from "../../interfaces/project";
 
 interface ProjectFormProps {
@@ -29,8 +30,7 @@ export default function ProjectForm({
     setError("");
   }, [isOpen, editing]);
 
-  const userRaw = localStorage.getItem("user");
-  const user = userRaw ? JSON.parse(userRaw) : null;
+  const user = getStoredUser();
 
   const resetAndClose = () => {
     setName(editing?.name ?? "");

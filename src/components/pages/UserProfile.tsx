@@ -1,13 +1,17 @@
 import { Mail, Hash, LogOut } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { clearSession, getStoredUser } from "../../utils/session";
 
 export default function UserProfile() {
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = getStoredUser();
   const navigate = useNavigate();
 
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    clearSession();
     navigate("/auth", { replace: true });
   };
 

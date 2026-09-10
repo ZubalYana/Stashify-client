@@ -7,6 +7,7 @@ import { X, Plus, Save, Sparkles, AlertTriangle, CircleX } from "lucide-react";
 import { useState, useEffect } from "react";
 import ScanOverlay from "../functionalElements/ScanOverlay";
 import { apiFetch, messageForError, waitIfRateLimited } from "../../utils/apiFetch";
+import { getStoredUser } from "../../utils/session";
 import { useToast } from "../hooks/useToast";
 import ToastContainer from "../functionalElements/ToastContainer";
 
@@ -68,9 +69,8 @@ export default function SnippetEditing({
   }, []);
 
   useEffect(() => {
-    const raw = localStorage.getItem("user");
-    if (!raw) return;
-    const stored = JSON.parse(raw);
+    const stored = getStoredUser();
+    if (!stored) return;
     Promise.all([
       apiFetch(`/projects?user_id=${stored.user_id}`, { method: "GET" }).then(
         (res) => res.json()

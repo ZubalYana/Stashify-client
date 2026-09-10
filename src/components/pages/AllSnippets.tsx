@@ -13,6 +13,7 @@ import { CheckCircle, CircleCheck, CircleX } from "lucide-react";
 import SnippetEditing from "../popups/SnippetEditing";
 import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../../utils/apiFetch";
+import { getSession } from "../../utils/session";
 import type Project from "../../interfaces/project";
 
 export default function AllSnippets() {
@@ -26,15 +27,12 @@ export default function AllSnippets() {
   const { toasts, addToast, removeToast } = useToast();
   const navigate = useNavigate();
 
-  const userRaw = localStorage.getItem("user")
-  const token = localStorage.getItem("token");
-
-  if (!token || !userRaw) {
+  const session = getSession();
+  if (!session) {
     navigate("/auth");
     return;
   }
-
-  const user = JSON.parse(userRaw)
+  const { user } = session;
 
   async function fetchSnippets() {
     try {

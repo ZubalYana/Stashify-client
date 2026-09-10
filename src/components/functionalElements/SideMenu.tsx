@@ -15,6 +15,7 @@ import {
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import MobileNav from "../popups/MobileNav";
 import { apiFetch } from "../../utils/apiFetch";
+import { getStoredUser } from "../../utils/session";
 import type Project from "../../interfaces/project";
 import type Collection from "../../interfaces/collection";
 import ProjectForm from "../popups/ProjectForm";
@@ -194,9 +195,8 @@ export default function SideMenu() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const raw = localStorage.getItem("user");
-    if (!raw) return;
-    const user = JSON.parse(raw);
+    const user = getStoredUser();
+    if (!user) return;
     const loadProjects = () => {
       apiFetch(`/projects?user_id=${user.user_id}`, { method: "GET" })
         .then((res) => res.json())

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Pencil, Trash2, Library, CheckCircle, CircleCheck, CircleX } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { apiFetch } from "../../utils/apiFetch";
+import { getSession } from "../../utils/session";
 import type Collection from "../../interfaces/collection";
 import type snippet from "../../interfaces/snippet";
 import SnippetCard from "../functionalElements/SnippetCard";
@@ -32,15 +33,12 @@ export default function CollectionDetail() {
   const [selectedSnippet, setSelectedSnippet] = useState<snippet | null>(null);
   const { toasts, addToast, removeToast } = useToast();
 
-  const userRaw = localStorage.getItem("user");
-  const token = localStorage.getItem("token");
-
-  if (!token || !userRaw) {
+  const session = getSession();
+  if (!session) {
     navigate("/auth");
     return;
   }
-
-  const user = JSON.parse(userRaw);
+  const { user } = session;
 
   async function fetchCollection() {
     try {

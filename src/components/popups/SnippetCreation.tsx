@@ -7,6 +7,7 @@ import type Collection from "../../interfaces/collection";
 import CollectionPicker from "../functionalElements/CollectionPicker";
 import ScanOverlay from "../functionalElements/ScanOverlay";
 import { apiFetch, messageForError, waitIfRateLimited } from "../../utils/apiFetch";
+import { getSession, getStoredUser } from "../../utils/session";
 import { useToast } from "../hooks/useToast";
 import ToastContainer from "../functionalElements/ToastContainer";
 import { useNavigate } from "react-router-dom";
@@ -66,9 +67,8 @@ export default function SnippetCreation({
   const { addToast, removeToast, toasts } = useToast();
 
   useEffect(() => {
-    const raw = localStorage.getItem("user");
-    if (!raw) return;
-    const stored = JSON.parse(raw);
+    const stored = getStoredUser();
+    if (!stored) return;
     Promise.all([
       apiFetch(`/projects?user_id=${stored.user_id}`, { method: "GET" }).then(
         (res) => res.json()
@@ -117,14 +117,12 @@ export default function SnippetCreation({
     }
   };
 
-  const userRaw = localStorage.getItem("user")
-
-  if (!userRaw) {
-    navigate('/auth')
-    return
+  const session = getSession();
+  if (!session) {
+    navigate("/auth");
+    return;
   }
-
-  const user = JSON.parse(userRaw)
+  const { user } = session;
 
   const handleAddTag = () => {
     const trimmed = newTag.trim();
