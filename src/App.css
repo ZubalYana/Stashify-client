@@ -27,3 +27,28 @@ input:-webkit-autofill:focus {
   -webkit-text-fill-color: #f5f5f5;
   caret-color: #f5f5f5;
 }
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #F07020 #0d0d0d; 
+}
+
+::-webkit-scrollbar {
+  width: 14px;  
+  height: 14px; 
+  background: #0d0d0d; 
+}
+
+::-webkit-scrollbar-track {
+  background: #0d0d0d;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #F07020;
+  border-radius: 10px;
+  border: 3px solid #0d0d0d; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #fa8843; 
+}
