@@ -103,12 +103,23 @@ export default function Auth() {
     }
   };
 
+  const isValidEmail = (value: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+
   const isValidPassword = (value: string) =>
     value.length >= 8 && /[A-Za-z]/.test(value) && /\d/.test(value);
 
   const handleSubmit = () => {
     if (isLogin) {
       logIn(email, password);
+      return;
+    }
+    if (!isValidEmail(email)) {
+      addToast({
+        type: "error",
+        Icon: CircleX,
+        text: "Email must be a valid format",
+      });
       return;
     }
     if (!isValidPassword(password)) {
