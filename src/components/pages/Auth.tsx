@@ -103,12 +103,23 @@ export default function Auth() {
     }
   };
 
+  const isValidPassword = (value: string) =>
+    value.length >= 8 && /[A-Za-z]/.test(value) && /\d/.test(value);
+
   const handleSubmit = () => {
     if (isLogin) {
       logIn(email, password);
-    } else {
-      register(name, email, password);
+      return;
     }
+    if (!isValidPassword(password)) {
+      addToast({
+        type: "error",
+        Icon: CircleX,
+        text: "Password must be at least 8 characters and include a letter and a number",
+      });
+      return;
+    }
+    register(name, email, password);
   };
 
   return (
