@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Library } from "lucide-react";
-import { apiFetch } from "../../utils/apiFetch";
+import { apiFetch, waitIfRateLimited } from "../../utils/apiFetch";
 import type Collection from "../../interfaces/collection";
 
 interface CollectionFormProps {
@@ -40,6 +40,7 @@ export default function CollectionForm({
   };
 
   const handleSave = async () => {
+    if (saving) return;
     if (!user || !name.trim()) {
       setError("Collection name is required");
       return;
@@ -78,6 +79,7 @@ export default function CollectionForm({
           ? err.message
           : "Could not save collection"
       );
+      await waitIfRateLimited(err);
     } finally {
       setSaving(false);
     }

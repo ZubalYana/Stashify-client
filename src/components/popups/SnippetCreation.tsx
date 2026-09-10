@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { X, Braces, Plus, Sparkles, Save, CircleX } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import type snippet from "../../interfaces/snippet";
@@ -6,7 +6,7 @@ import type Project from "../../interfaces/project";
 import type Collection from "../../interfaces/collection";
 import CollectionPicker from "../functionalElements/CollectionPicker";
 import ScanOverlay from "../functionalElements/ScanOverlay";
-import { apiFetch } from "../../utils/apiFetch";
+import { apiFetch, messageForError, waitIfRateLimited } from "../../utils/apiFetch";
 import { useToast } from "../hooks/useToast";
 import ToastContainer from "../functionalElements/ToastContainer";
 import { useNavigate } from "react-router-dom";
@@ -49,7 +49,9 @@ export default function SnippetCreation({
 }: SnippetCreationProps) {
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
+  const inFlightRef = useRef(false);
   const navigate = useNavigate();
 
   const [title, setTitle] = useState("");
@@ -83,8 +85,9 @@ export default function SnippetCreation({
   }, []);
 
   const generateResponse = async (code: string) => {
+    if (inFlightRef.current || !code.trim()) return;
+    inFlightRef.current = true;
     try {
-      if (!code.trim()) return;
       setIsLoading(true);
       setIsGenerated(false);
 
@@ -99,16 +102,18 @@ export default function SnippetCreation({
       setDescription(analysis.description);
       setLanguage(analysis.language);
       setTags(analysis.tags);
-      setIsLoading(false);
       setIsGenerated(true);
     } catch (error) {
       console.error(error);
-      setIsLoading(false);
       addToast({
-        text: "Error creating snippet",
+        text: messageForError(error, "Error analyzing snippet"),
         type: "error",
         Icon: CircleX,
       });
+      await waitIfRateLimited(error);
+    } finally {
+      inFlightRef.current = false;
+      setIsLoading(false);
     }
   };
 
@@ -140,7 +145,10 @@ export default function SnippetCreation({
   };
 
   const handleSave = async () => {
+    if (inFlightRef.current) return;
+    inFlightRef.current = true;
     try {
+      setIsSaving(true);
       const res = await apiFetch("/snippets", {
         method: "POST",
         body: JSON.stringify({
@@ -159,10 +167,14 @@ export default function SnippetCreation({
       onClose();
     } catch (error) {
       addToast({
-        text: "Error creating snippet",
+        text: messageForError(error, "Error creating snippet"),
         type: "error",
         Icon: CircleX,
       });
+      await waitIfRateLimited(error);
+    } finally {
+      inFlightRef.current = false;
+      setIsSaving(false);
     }
   };
 
@@ -170,10 +182,9 @@ export default function SnippetCreation({
     <motion.div
       layout
       transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-      className="bg-[#121212] rounded-2xl border border-white/10 flex flex-col my-auto w-full"
+      className="bg-[#121212] rounded-2xl border border-white/10 flex flex-col my-auto w-[min(92vw,1400px)]"
       style={{
-        maxWidth: isGenerated ? "980px" : "720px",
-        maxHeight: "min(90dvh, 900px)",
+        maxHeight: "min(90dvh, 960px)",
       }}
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
@@ -378,27 +389,33 @@ export default function SnippetCreation({
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.25 }}
               onClick={() => {
+                if (isLoading || isSaving) return;
                 setIsGenerated(false);
                 setTitle("");
                 setDescription("");
                 setLanguage("");
                 setTags([]);
               }}
-              className="flex items-center gap-1.5 px-3.5 py-2 text-sm text-white/40 hover:text-white/70 border border-white/8 hover:border-white/15 rounded-xl transition-all duration-150 cursor-pointer"
+              disabled={isLoading || isSaving}
+              className="flex items-center gap-1.5 px-3.5 py-2 text-sm text-white/40 hover:text-white/70 border border-white/8 hover:border-white/15 rounded-xl transition-all duration-150 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Re-analyze
             </motion.button>
           )}
 
           <button
-            onClick={isGenerated ? handleSave : () => generateResponse(code)}
-            disabled={isLoading || !code.trim()}
+            onClick={() => {
+              if (isLoading || isSaving) return;
+              if (isGenerated) handleSave();
+              else generateResponse(code);
+            }}
+            disabled={isLoading || isSaving || !code.trim()}
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed bg-[#F07020] hover:bg-[#d96418] text-white shadow-[0_0_16px_rgba(240,112,32,0.25)] hover:shadow-[0_0_22px_rgba(240,112,32,0.35)]"
           >
             {isGenerated ? (
               <>
                 <Save size={14} />
-                Save snippet
+                {isSaving ? "Saving..." : "Save snippet"}
               </>
             ) : (
               <>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Folder } from "lucide-react";
-import { apiFetch } from "../../utils/apiFetch";
+import { apiFetch, waitIfRateLimited } from "../../utils/apiFetch";
 import type Project from "../../interfaces/project";
 
 interface ProjectFormProps {
@@ -40,6 +40,7 @@ export default function ProjectForm({
   };
 
   const handleSave = async () => {
+    if (saving) return;
     if (!user || !name.trim()) {
       setError("Project name is required");
       return;
@@ -78,6 +79,7 @@ export default function ProjectForm({
           ? err.message
           : "Could not save project"
       );
+      await waitIfRateLimited(err);
     } finally {
       setSaving(false);
     }

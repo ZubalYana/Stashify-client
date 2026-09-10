@@ -1,8 +1,8 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { Copy, Pencil, Trash2, Check, FolderMinus, BookmarkMinus } from "lucide-react";
 import { useState } from "react";
-import hljs from "highlight.js";
 import "highlight.js/styles/atom-one-dark.css";
+import { highlightCode } from "../../utils/highlightCode";
 
 export interface SnippetCardProps {
   title: string;
@@ -71,9 +71,7 @@ export default function SnippetCard({
     setTimeout(() => setCopied(false), 1800);
   }
 
-  const highlightedCode = hljs.highlight(code, {
-    language: language,
-  }).value;
+  const highlightedCode = highlightCode(code, language);
 
   return (
     <motion.div

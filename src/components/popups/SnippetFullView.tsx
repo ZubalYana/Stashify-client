@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 import { X, Copy, Check } from "lucide-react";
 import { useState } from "react";
 import type snippet from "../../interfaces/snippet";
-import hljs from "highlight.js";
 import "highlight.js/styles/atom-one-dark.css";
+import { highlightCode } from "../../utils/highlightCode";
 
 interface SnippetFullViewProps {
   snippet: snippet;
@@ -16,9 +16,7 @@ export default function SnippetFullView({
 }: SnippetFullViewProps) {
   const [copied, setCopied] = useState(false);
 
-  const highlightedCode = hljs.highlight(snippet.code, {
-    language: snippet.language,
-  }).value;
+  const highlightedCode = highlightCode(snippet.code, snippet.language);
 
   function handleCopy(e: React.MouseEvent) {
     e.stopPropagation();

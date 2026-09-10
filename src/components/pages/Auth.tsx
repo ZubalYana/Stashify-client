@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "../hooks/useToast";
 import { CircleX } from "lucide-react";
 import ToastContainer from "../functionalElements/ToastContainer";
+import { ApiError, messageForError } from "../../utils/apiFetch";
 
 function useIsMobile() {
   return typeof window != "undefined" && window.innerWidth < 768;
@@ -19,6 +20,7 @@ export default function Auth() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const isLogin = mode === "login";
   const isMobile = useIsMobile();
   const navigate = useNavigate();
@@ -38,6 +40,8 @@ export default function Auth() {
       };
 
   const logIn = async (email: string, password: string) => {
+    if (submitting) return;
+    setSubmitting(true);
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
         method: "POST",
@@ -47,8 +51,14 @@ export default function Auth() {
         body: JSON.stringify({ email, password }),
       });
       if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.message);
+        let message = "";
+        try {
+          const error = await res.json();
+          message = error.message ?? "";
+        } catch {
+          // ignore
+        }
+        throw new ApiError(message, res.status);
       }
       const data = await res.json();
       localStorage.setItem("token", data.token);
@@ -65,12 +75,16 @@ export default function Auth() {
       addToast({
         type: "error",
         Icon: CircleX,
-        text: "Error logging you in.",
+        text: messageForError(error, "Error logging you in."),
       });
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const register = async (name: string, email: string, password: string) => {
+    if (submitting) return;
+    setSubmitting(true);
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
         method: "POST",
@@ -80,8 +94,14 @@ export default function Auth() {
         body: JSON.stringify({ name, email, password }),
       });
       if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.message);
+        let message = "";
+        try {
+          const error = await res.json();
+          message = error.message ?? "";
+        } catch {
+          // ignore
+        }
+        throw new ApiError(message, res.status);
       }
       const data = await res.json();
       localStorage.setItem("token", data.token);
@@ -98,8 +118,10 @@ export default function Auth() {
       addToast({
         type: "error",
         Icon: CircleX,
-        text: "Error signing you up.",
+        text: messageForError(error, "Error signing you up."),
       });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -110,6 +132,7 @@ export default function Auth() {
     value.length >= 8 && /[A-Za-z]/.test(value) && /\d/.test(value);
 
   const handleSubmit = () => {
+    if (submitting) return;
     if (isLogin) {
       logIn(email, password);
       return;
@@ -204,10 +227,11 @@ export default function Auth() {
             transition={{ duration: 0.15 }}
           >
             <PrimaryButton
-              text={isLogin ? "Log in" : "Sign up"}
+              text={submitting ? (isLogin ? "Logging in..." : "Signing up...") : (isLogin ? "Log in" : "Sign up")}
               onClick={handleSubmit}
               size="sm"
               fullWidth
+              disabled={submitting}
             />
           </motion.div>
         </AnimatePresence>

@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Plus, Save, Sparkles, AlertTriangle, CircleX } from "lucide-react";
 import { useState, useEffect } from "react";
 import ScanOverlay from "../functionalElements/ScanOverlay";
-import { apiFetch } from "../../utils/apiFetch";
+import { apiFetch, messageForError, waitIfRateLimited } from "../../utils/apiFetch";
 import { useToast } from "../hooks/useToast";
 import ToastContainer from "../functionalElements/ToastContainer";
 
@@ -105,6 +105,7 @@ export default function SnippetEditing({
   };
 
   const handleReanalyzeClick = () => {
+    if (isReanalyzing || isSaving) return;
     if (!reanalyzeWarning) {
       setReanalyzeWarning(true);
       return;
@@ -113,7 +114,7 @@ export default function SnippetEditing({
   };
 
   const runReanalyze = async () => {
-    if (!code.trim()) return;
+    if (!code.trim() || isReanalyzing || isSaving) return;
     setIsReanalyzing(true);
     setReanalyzeWarning(false);
 
@@ -131,15 +132,17 @@ export default function SnippetEditing({
       console.error(err);
        addToast({
         type: 'error',
-        text: 'Error reanalyzing your snippet',
+        text: messageForError(err, 'Error reanalyzing your snippet'),
         Icon: CircleX
       })
+      await waitIfRateLimited(err);
     } finally {
       setIsReanalyzing(false);
     }
   };
 
   const editSnippet = async () => {
+    if (isSaving || isReanalyzing) return;
     try {
       setIsSaving(true);
       const res = await apiFetch(`/snippets/${editingSnippet.id}`, {
@@ -160,12 +163,12 @@ export default function SnippetEditing({
       onClose();
     } catch (err) {
       console.error(err);
-      setIsSaving(false);
       addToast({
         type: 'error',
-        text: 'Error editing your snippet',
+        text: messageForError(err, 'Error editing your snippet'),
         Icon: CircleX
       })
+      setIsSaving(false);
     }
   };
 
@@ -378,7 +381,7 @@ export default function SnippetEditing({
         <div className="flex flex-wrap gap-2 sm:ml-auto justify-end">
           <motion.button
             onClick={handleReanalyzeClick}
-            disabled={isReanalyzing || !code.trim()}
+            disabled={isReanalyzing || isSaving || !code.trim()}
             animate={
               reanalyzeWarning ? { borderColor: "rgba(251,191,36,0.4)" } : {}
             }
@@ -394,7 +397,7 @@ export default function SnippetEditing({
 
           <button
             onClick={editSnippet}
-            disabled={isSaving || !code.trim() || !title.trim()}
+            disabled={isSaving || isReanalyzing || !code.trim() || !title.trim()}
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-xl
                        transition-all duration-200 cursor-pointer
                        disabled:opacity-40 disabled:cursor-not-allowed

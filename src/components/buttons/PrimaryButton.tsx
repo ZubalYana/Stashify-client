@@ -6,6 +6,7 @@ interface PrimaryButtonProps {
   onClick: () => void;
   size?: "md" | "sm";
   fullWidth?: boolean;
+  disabled?: boolean;
 }
 
 const sizes = {
@@ -13,11 +14,13 @@ const sizes = {
   sm: { button: "px-4 py-2.5 rounded-[12px] gap-x-1.5", text: "text-[14px]", icon: 15 },
 }
 
-export default function PrimaryButton({ Icon, text, onClick, size = "md", fullWidth = false }: PrimaryButtonProps) {
+export default function PrimaryButton({ Icon, text, onClick, size = "md", fullWidth = false, disabled = false }: PrimaryButtonProps) {
   const s = sizes[size]
   return (
     <button
+      type="button"
       onClick={onClick}
+      disabled={disabled}
       className={`
         group ${s.button}
         ${fullWidth ? "w-full justify-center" : ""}
@@ -26,6 +29,8 @@ export default function PrimaryButton({ Icon, text, onClick, size = "md", fullWi
         hover:shadow-[0_0_0_6px_rgba(240,112,32,0.15)]
         active:scale-95
         transition-all duration-200 ease-out
+        disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[#F07020]
+        disabled:hover:shadow-none disabled:active:scale-100
       `}
     >
       {Icon && <Icon size={s.icon} className="transition-transform duration-200 group-hover:scale-110" strokeWidth={2.5} />}
