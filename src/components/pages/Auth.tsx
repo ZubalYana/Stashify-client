@@ -28,7 +28,7 @@ export default function Auth() {
   const { toasts, addToast, removeToast } = useToast();
 
   if (getSession()) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/snippets" replace />;
   }
 
   const fieldVariants = isMobile
@@ -68,7 +68,7 @@ export default function Auth() {
         userEmail: data.user.email,
         userName: data.user.name,
       });
-      navigate("/");
+      navigate("/snippets");
     } catch (error) {
       addToast({
         type: "error",
@@ -107,7 +107,7 @@ export default function Auth() {
         userEmail: data.user.email,
         userName: data.user.name,
       });
-      navigate("/");
+      navigate("/snippets");
     } catch (error) {
       addToast({
         type: "error",

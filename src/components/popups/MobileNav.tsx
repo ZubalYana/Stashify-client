@@ -26,7 +26,7 @@ interface MobileNavProps {
 }
 
 const navItems = [
-  { label: "All Snippets", icon: <Boxes size={18} strokeWidth={1} />, to: "/", end: true },
+  { label: "All Snippets", icon: <Boxes size={18} strokeWidth={1} />, to: "/snippets", end: true },
   { label: "Projects",     icon: <BrainCircuit size={18} strokeWidth={1} />, to: "/projects" },
   { label: "Collections",  icon: <Library size={18} strokeWidth={1} />, to: "/collections" },
 ];

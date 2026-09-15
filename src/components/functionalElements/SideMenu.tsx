@@ -262,7 +262,7 @@ export default function SideMenu() {
         </div>
 
         <nav className="flex flex-col gap-y-2 flex-1 min-h-0 overflow-y-auto nav-scroll">
-          <NavLink to="/">
+          <NavLink to="/snippets">
             {({ isActive }) => (
               <motion.div
                 className={`w-full flex items-center gap-x-2 text-[14px] rounded-[12px] px-3 py-2 cursor-pointer
