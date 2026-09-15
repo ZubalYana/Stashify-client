@@ -1,6 +1,8 @@
 import AnimatedBackground from "../AnimatedBackground";
-import Features from "../landing/Features";
+import Demo from "../landing/Demo";
+import Flow from "../landing/Flow";
 import Hero from "../landing/Hero";
+import LandingFooter from "../landing/LandingFooter";
 import LandingHeader from "../landing/LandingHeader";
 
 export default function Landing() {
@@ -13,7 +15,9 @@ export default function Landing() {
         <LandingHeader />
         <Hero />
       </div>
-      <Features />
+      <Flow />
+      <Demo />
+      <LandingFooter />
     </div>
   );
 }

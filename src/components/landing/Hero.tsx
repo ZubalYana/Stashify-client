@@ -43,10 +43,10 @@ export default function Hero() {
           </button>
 
           <a
-            href="#features"
+            href="#flow"
             onClick={(event) => {
               event.preventDefault();
-              document.getElementById("features")?.scrollIntoView({
+              document.getElementById("flow")?.scrollIntoView({
                 behavior: "smooth",
                 block: "start",
               });
