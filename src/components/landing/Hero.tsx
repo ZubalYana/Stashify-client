@@ -28,12 +28,12 @@ export default function Hero() {
           code snippets.
         </p>
 
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-2.5">
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2.5 2xl:gap-4">
           <button
             type="button"
             onClick={() => navigate(loggedIn ? "/snippets" : "/auth")}
             className="inline-flex items-center gap-1.5 rounded-full bg-[#F07020]
-                       px-4 py-2 text-[13px] sm:text-[14px]
+                       px-4 py-2 2xl:px-6 text-[13px] sm:text-[14px] 2xl:text-[16px]
                        font-semibold text-white cursor-pointer
                        hover:bg-[#FF8533] hover:shadow-[0_0_0_6px_rgba(240,112,32,0.15)]
                        active:scale-[0.97] transition-all duration-200"
@@ -52,7 +52,7 @@ export default function Hero() {
               });
             }}
             className="inline-flex items-center rounded-full border border-white/16
-                       px-4 py-2 text-[13px] sm:text-[14px]
+                       px-4 py-2 2xl:px-6 text-[13px] sm:text-[14px] 2xl:text-[16px]
                        font-medium text-white/80
                        hover:border-white/28 hover:bg-white/[0.04] hover:text-white
                        active:scale-[0.97] transition-all duration-200"
